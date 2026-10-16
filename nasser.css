@@ -1,0 +1,14 @@
+/* v12: Nasser AI — وكيل د. ناصر الدوسري */
+#homeHead3.nasser{display:flex;align-items:center;gap:.8em;padding:.85em .9em;border-radius:var(--r,18px);margin:0 0 12px;cursor:pointer;position:relative;overflow:hidden;
+  background:linear-gradient(135deg,#123a36 0%,#14211f 55%,#1a2a28 100%);border:1px solid #2f6b62;color:#f3f5f9;font-family:"IBM Plex Sans Arabic","Readex Pro",system-ui,sans-serif;-webkit-tap-highlight-color:transparent}
+#homeHead3 .hav{flex:none;width:3.4em;height:3.4em;border-radius:50%}
+#homeHead3 .ht{flex:1;min-width:0;display:flex;flex-direction:column;gap:.15em}
+#homeHead3 .ht b{font-family:"Readex Pro",sans-serif;font-size:1.05em;display:flex;align-items:center;gap:.4em}
+#homeHead3 .ht span{color:#a9b8b5;font-size:.84em;line-height:1.5}
+#homeHead3 .chev{flex:none;color:#a9b8b5;font-size:1.3em;transform:scaleX(-1)}
+body.appmode.hubmode .wrap>#homeHead3:not(#a):not(#b):not(#c):not(#d){display:flex!important}
+body.appmode:not(.hubmode) .wrap>#homeHead3:not(#a):not(#b):not(#c):not(#d){display:none!important}
+.nav{background:linear-gradient(135deg,#3ed0b8,#1f8f7c)!important;color:#fff;display:flex;align-items:center;justify-content:center;font-family:"Readex Pro",sans-serif;font-weight:800;font-size:1.3em;border:2px solid rgba(255,255,255,.12)}
+.aiav.sm.nav{display:flex;font-size:.95em;width:2em;height:2em}
+#aiBar .aitag .trav.nav{width:1.5em;height:1.5em;font-size:.9em;border-width:1px}
+body.pnasser #aiForm #aiSend{background:#1f9e89}
