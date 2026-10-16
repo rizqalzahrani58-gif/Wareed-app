@@ -1,4 +1,4 @@
-/* غرفة الوكلاء — الشريط العلوي الزجاجي (v8)
+/* غرفة الوكلاء — الشريط العلوي الزجاجي (v9)
    يشتغل فوق native.js: يستبدل بطاقتي Rizq AI وRawan AI بغرفة زجاجية وحدة لأبو راكان وروان،
    ويعرض غرفة مقفلة لأي زميل ما عنده وكيل. البيانات من collection council. */
 (function(){
@@ -111,9 +111,11 @@
     const lk = el('div', 'lk', SVG.lock(24));
     lock.append(lk, txt('h3', '', 'غرفة وكلاء الذكاء الاصطناعي'), txt('p', '', 'ما عندك وكيل خاص بعد. الوكلاء وحوارهم ملك أبو راكان، ويشوفها هو وروان العنزي.'));
     const row = el('div', 'arBtnRow');
-    const btn = txt('button', 'arBtn', 'اسأل Rizq AI عن مهامي'); btn.type = 'button';
+    const req = txt('button', 'arBtn primary', 'اطلب وكيل ذكاء اصطناعي'); req.type = 'button';
+    req.addEventListener('click', () => openChat('rizq', 'أبي أطلب من أبو راكان وكيل ذكاء اصطناعي خاص فيني لقسمي.'));
+    const btn = txt('button', 'arBtn', 'اسأل Rizq AI'); btn.type = 'button';
     btn.addEventListener('click', () => openChat('rizq'));
-    row.append(btn, txt('span', 'arMuted', 'طلب وكيل: من أبو راكان'));
+    row.append(req, btn);
     inn.append(ghost, top, lock, row);
     card.append(inn);
     const h1 = $('homeHead'); if (h1) { h1.hidden = true; h1.classList.add('arHide'); }
@@ -240,13 +242,14 @@
     return null;
   }
   (async () => {
-    try { console.log('[agentRoom] v8 loaded'); } catch (e) {}
+    try { console.log('[agentRoom] v9 loaded'); } catch (e) {}
     const wrap = await waitFor(() => { const h = $('homeHead') || deepFind('homeHead'); return h && h.parentNode ? h.parentNode : null; });
     if (!wrap) { try { console.warn('[agentRoom] homeHead not found'); } catch (e) {} return; }
     await waitFor(() => document.body.dataset.role || window.__isBoss || document.body.dataset.rawan, 8000);
     if (!privileged()) { buildLocked(wrap); return; }
     buildCard(wrap);
     waitFor(() => $('councilSec'), 30000).then(s => { if (s) adaptCouncil(); });
+    waitFor(() => { const hub = $('hub'); if (!hub) return null; const leaf = Array.from(hub.querySelectorAll('*')).find(n => n.children.length === 0 && /مجلس\s*الوكلاء/.test(n.textContent || '')); return leaf || null; }, 60000).then(leaf => { if (!leaf) return; let t = leaf; const hub = $('hub'); while (t && t.parentNode && t.parentNode !== hub && !(t.parentNode.children.length > 6)) t = t.parentNode; t.classList.add('arHideTile'); });
     try {
       const merge = list => { const m = {}; S.docs.forEach(d => { m[d.id] = d; }); list.forEach(d => { m[d.id] = d; }); S.docs = Object.keys(m).map(k => m[k]); paintCard(); if (S.sheet && S.sheet.sh.classList.contains('open')) paintSheet(); };
       if (window.sb && window.sb.from) {
