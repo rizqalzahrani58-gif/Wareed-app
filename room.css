@@ -1,0 +1,115 @@
+/* غرفة الوكلاء — الشريط العلوي الزجاجي (v1) */
+#agentRoom{position:relative;margin:0 0 12px;border-radius:26px;padding:1px;cursor:pointer;-webkit-tap-highlight-color:transparent;
+  background:linear-gradient(135deg,rgba(90,162,255,.55) 0%,rgba(255,255,255,.10) 45%,rgba(167,139,250,.55) 100%);
+  box-shadow:0 24px 60px rgba(0,0,0,.55),0 0 40px rgba(90,162,255,.10);font-family:"IBM Plex Sans Arabic","Readex Pro",system-ui,sans-serif;color:#f3f5f9}
+#agentRoom.locked{background:linear-gradient(135deg,rgba(255,255,255,.22) 0%,rgba(255,255,255,.06) 50%,rgba(255,255,255,.18) 100%);box-shadow:0 24px 60px rgba(0,0,0,.55);cursor:default}
+#agentRoom .arIn{position:relative;overflow:hidden;border-radius:25px;padding:14px 16px 14px;display:flex;flex-direction:column;gap:12px;
+  background:linear-gradient(160deg,rgba(255,255,255,.10) 0%,rgba(255,255,255,.04) 40%,rgba(16,20,32,.72) 100%);
+  -webkit-backdrop-filter:blur(22px) saturate(140%);backdrop-filter:blur(22px) saturate(140%)}
+#agentRoom .arIn::before{content:"";position:absolute;top:0;right:24px;left:24px;height:1px;background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.55) 50%,rgba(255,255,255,0))}
+#agentRoom .arTop{display:flex;align-items:center;justify-content:space-between;min-height:28px}
+#agentRoom .arDot{width:8px;height:8px;border-radius:50%;background:#6b7280;box-shadow:none}
+#agentRoom.live .arDot{background:#34d399;box-shadow:0 0 12px #34d399;animation:arPulse 2.2s ease-in-out infinite}
+@keyframes arPulse{0%,100%{opacity:1}50%{opacity:.45}}
+#agentRoom .arChev{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);display:flex;align-items:center;justify-content:center}
+#agentRoom .arSeats{display:flex;align-items:center;justify-content:space-between;padding:0 6px}
+#agentRoom .arSeat{display:flex;flex-direction:column;align-items:center;gap:8px;width:96px;background:none;border:0;padding:0;color:inherit;font:inherit;cursor:pointer}
+#agentRoom .arAv{position:relative;width:64px;height:64px;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;font-family:"Readex Pro",sans-serif;font-weight:700;font-size:24px;color:#fff}
+#agentRoom .arAv img{width:100%;height:100%;object-fit:cover;display:block}
+#agentRoom .arAv.rizq{background:radial-gradient(circle at 30% 30%,#8dbcff,#2f6fd6 70%);box-shadow:0 0 0 3px rgba(90,162,255,.35),0 10px 24px rgba(90,162,255,.35)}
+#agentRoom .arAv.rawan{background:radial-gradient(circle at 30% 30%,#c4b5fd,#6d4fd8 70%);box-shadow:0 0 0 3px rgba(167,139,250,.35),0 10px 24px rgba(167,139,250,.35)}
+#agentRoom .arName{font-size:14px;font-weight:700;letter-spacing:.2px}
+#agentRoom .arLink{flex:1;display:flex;justify-content:center;align-items:center}
+#agentRoom .arLink svg{width:120px;height:36px;display:block}
+#agentRoom .arCount{display:flex;justify-content:center}
+#agentRoom .arPill{display:flex;align-items:center;gap:8px;height:40px;padding:0 16px;border-radius:999px;border:1px solid rgba(255,255,255,.16);
+  background:linear-gradient(90deg,rgba(90,162,255,.22),rgba(167,139,250,.22));box-shadow:0 8px 20px rgba(90,162,255,.15);font-size:13px;font-weight:600}
+#agentRoom .arPill b{font-family:"Readex Pro",sans-serif;font-size:14px}
+/* المدير بدون وكيل */
+#agentRoom .arGhost{position:absolute;inset:56px 16px 16px;display:flex;flex-direction:column;gap:10px;filter:blur(9px);opacity:.45;pointer-events:none}
+#agentRoom .arGhost .g1{display:flex;justify-content:space-between;padding:0 8px}
+#agentRoom .arGhost .g1 i{width:60px;height:60px;border-radius:50%;display:block}
+#agentRoom .arGhost .g2{height:36px;width:230px;border-radius:14px;background:rgba(90,162,255,.35)}
+#agentRoom .arGhost .g3{height:36px;width:210px;border-radius:14px;background:rgba(167,139,250,.35);align-self:flex-end}
+#agentRoom .arLock{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:14px 0 4px;text-align:center}
+#agentRoom .arLock .lk{width:56px;height:56px;border-radius:50%;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;box-shadow:0 8px 24px rgba(0,0,0,.35)}
+#agentRoom .arLock h3{margin:0;font-size:14px;font-weight:600}
+#agentRoom .arLock p{margin:0;font-size:12px;color:#c9d0de;line-height:1.6;max-width:280px}
+#agentRoom .arTag{display:flex;align-items:center;gap:6px;font-size:11px;color:#c9d0de;padding:4px 10px;border-radius:999px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12)}
+#agentRoom .arTitle{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600}
+#agentRoom .arBtnRow{position:relative;display:flex;align-items:center;justify-content:space-between;gap:10px}
+#agentRoom .arBtn{flex:1;height:44px;border-radius:14px;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.08);color:#f3f5f9;font-weight:600;font-size:13px;cursor:pointer;font-family:inherit}
+#agentRoom .arMuted{font-size:11px;color:#8f98ad;white-space:nowrap}
+
+/* الغرفة المفتوحة */
+#agentSheet{position:fixed;inset:0;z-index:900;display:none;font-family:"IBM Plex Sans Arabic","Readex Pro",system-ui,sans-serif;color:#f3f5f9}
+#agentSheet.open{display:block}
+#agentSheet .asBg{position:absolute;inset:0;background:rgba(5,7,12,.55)}
+#agentSheet .asGlow1,#agentSheet .asGlow2{position:absolute;border-radius:50%;filter:blur(14px);pointer-events:none}
+#agentSheet .asGlow1{top:40px;right:-100px;width:380px;height:380px;background:radial-gradient(circle,rgba(90,162,255,.30),rgba(90,162,255,0) 70%)}
+#agentSheet .asGlow2{bottom:60px;left:-120px;width:380px;height:380px;background:radial-gradient(circle,rgba(167,139,250,.30),rgba(167,139,250,0) 70%)}
+#agentSheet .asFrame{position:absolute;top:calc(env(safe-area-inset-top,0px) + 44px);right:12px;left:12px;bottom:0;border-radius:30px 30px 0 0;padding:1px 1px 0;
+  background:linear-gradient(180deg,rgba(255,255,255,.35),rgba(255,255,255,.08) 30%,rgba(255,255,255,.04));box-shadow:0 -10px 60px rgba(0,0,0,.5);
+  transform:translateY(24px);opacity:0;transition:transform .28s ease,opacity .28s ease}
+#agentSheet.open .asFrame{transform:none;opacity:1}
+#agentSheet .asIn{height:100%;box-sizing:border-box;border-radius:29px 29px 0 0;display:flex;flex-direction:column;overflow:hidden;
+  background:linear-gradient(180deg,rgba(255,255,255,.09) 0%,rgba(14,18,30,.86) 30%,rgba(11,13,18,.96) 100%);
+  -webkit-backdrop-filter:blur(26px) saturate(150%);backdrop-filter:blur(26px) saturate(150%)}
+#agentSheet .asGrip{display:flex;justify-content:center;padding-top:10px}
+#agentSheet .asGrip i{width:40px;height:5px;border-radius:3px;background:rgba(255,255,255,.25)}
+#agentSheet .asHead{display:flex;align-items:center;justify-content:space-between;padding:12px 16px 8px}
+#agentSheet .asWho{display:flex;align-items:center;gap:10px}
+#agentSheet .asAvs{display:flex}
+#agentSheet .asAv{width:36px;height:36px;border-radius:50%;overflow:hidden;box-shadow:0 0 0 2px #0b0d12;display:flex;align-items:center;justify-content:center;font-family:"Readex Pro",sans-serif;font-weight:700;font-size:14px;color:#fff}
+#agentSheet .asAv img{width:100%;height:100%;object-fit:cover;display:block}
+#agentSheet .asAv.rizq{background:radial-gradient(circle at 30% 30%,#8dbcff,#2f6fd6 70%)}
+#agentSheet .asAv.rawan{background:radial-gradient(circle at 30% 30%,#c4b5fd,#6d4fd8 70%);margin-right:-10px}
+#agentSheet .asT{display:flex;flex-direction:column;gap:2px}
+#agentSheet .asT b{font-size:15px;font-weight:700}
+#agentSheet .asT span{font-size:11px;color:#8f98ad}
+#agentSheet .asClose{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;cursor:pointer;color:#f3f5f9}
+#agentSheet .asTabs{display:flex;gap:6px;padding:4px 16px 12px;overflow-x:auto;scrollbar-width:none}
+#agentSheet .asTabs::-webkit-scrollbar{display:none}
+#agentSheet .asTab{flex-shrink:0;padding:7px 14px;border-radius:999px;font-size:12px;color:#c9d0de;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.10);cursor:pointer;font-family:inherit}
+#agentSheet .asTab.on{color:#0b0d12;font-weight:600;background:linear-gradient(90deg,#9cc4ff,#c4b5fd);border-color:transparent}
+#agentSheet .asWhen{display:flex;align-items:center;gap:10px;padding:0 16px 10px;font-size:11px;color:#8f98ad}
+#agentSheet .asWhen i{flex:1;height:1px;background:rgba(255,255,255,.10)}
+#agentSheet .asWhen span{white-space:nowrap}
+#agentSheet .asLog{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 14px 16px;display:flex;flex-direction:column;gap:12px}
+#agentSheet .asMsg{display:flex;gap:8px;align-items:flex-start}
+#agentSheet .asMsg.rawan{flex-direction:row-reverse}
+#agentSheet .asMsg .mav{width:28px;height:28px;border-radius:50%;overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:"Readex Pro",sans-serif;font-weight:700;font-size:12px;color:#fff}
+#agentSheet .asMsg .mav img{width:100%;height:100%;object-fit:cover;display:block}
+#agentSheet .asMsg.rizq .mav{background:radial-gradient(circle at 30% 30%,#8dbcff,#2f6fd6 70%)}
+#agentSheet .asMsg.rawan .mav{background:radial-gradient(circle at 30% 30%,#c4b5fd,#6d4fd8 70%)}
+#agentSheet .asMsg .mb{display:flex;flex-direction:column;gap:4px;max-width:86%}
+#agentSheet .asMsg.rawan .mb{align-items:flex-end}
+#agentSheet .asMsg .mn{font-size:10px;padding:0 4px}
+#agentSheet .asMsg.rizq .mn{color:#9cc4ff}
+#agentSheet .asMsg.rawan .mn{color:#c4b5fd}
+#agentSheet .asMsg .mt{font-size:12.5px;line-height:1.65;color:#eef1f7;padding:10px 12px;white-space:pre-wrap;word-break:break-word}
+#agentSheet .asMsg.rizq .mt{background:rgba(90,162,255,.14);border:1px solid rgba(90,162,255,.26);border-radius:16px 16px 16px 4px}
+#agentSheet .asMsg.rawan .mt{background:rgba(167,139,250,.14);border:1px solid rgba(167,139,250,.28);border-radius:16px 16px 4px 16px}
+#agentSheet .asMsg .mw{font-size:10px;color:#8f98ad;padding:0 4px}
+#agentSheet .asBox{padding:12px 14px;border-radius:16px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.10);display:flex;flex-direction:column;gap:6px}
+#agentSheet .asBox b{font-size:13px;line-height:1.5}
+#agentSheet .asBox p{margin:0;font-size:12px;line-height:1.65;color:#c9d0de}
+#agentSheet .asBox .k{color:#9cc4ff;font-weight:600}
+#agentSheet .asBox.lesson{border-color:rgba(167,139,250,.28);background:rgba(167,139,250,.08)}
+#agentSheet .asBox.lesson p{color:#eef1f7}
+#agentSheet .asEmpty{padding:30px 16px;text-align:center;color:#8f98ad;font-size:13px;line-height:1.7}
+#agentSheet .asFoot{padding:10px 14px calc(env(safe-area-inset-bottom,0px) + 14px);display:flex;flex-direction:column;gap:10px;background:linear-gradient(180deg,rgba(11,13,18,0),rgba(11,13,18,.9) 40%)}
+#agentSheet .asPin{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:12px 14px;border-radius:16px;cursor:pointer;
+  background:linear-gradient(135deg,rgba(90,162,255,.18),rgba(167,139,250,.18));border:1px solid rgba(255,255,255,.14)}
+#agentSheet .asPin div{display:flex;flex-direction:column;gap:3px;min-width:0}
+#agentSheet .asPin small{font-size:10px;color:#c9d0de}
+#agentSheet .asPin b{font-size:12.5px;font-weight:600;line-height:1.4}
+#agentSheet .asAsk{display:flex;align-items:center;gap:8px}
+#agentSheet .asAsk input{flex:1;height:44px;border-radius:14px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);padding:0 14px;font-size:13px;color:#f3f5f9;font-family:inherit;outline:0;min-width:0}
+#agentSheet .asAsk input::placeholder{color:#8f98ad}
+#agentSheet .asAsk button{width:44px;height:44px;border-radius:14px;border:0;cursor:pointer;background:linear-gradient(135deg,#5aa2ff,#a78bfa);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+body.arsheet{overflow:hidden}
+/* قسم مجلس الوكلاء → بيئة التعليم */
+#councilSec .arNote{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:8px 0 12px;padding:10px 14px;border-radius:14px;font-size:12px;line-height:1.6;color:#e6eaf2;cursor:pointer;
+  background:linear-gradient(135deg,rgba(90,162,255,.14),rgba(167,139,250,.14));border:1px solid rgba(255,255,255,.12)}
+#councilSec details.cday.arDaily{display:none}
