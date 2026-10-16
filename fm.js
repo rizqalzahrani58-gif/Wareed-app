@@ -1,310 +1,46 @@
-/* أيقونتا «التوقعات المالية» و«الأفكار التسويقية» في لوحة رزق (v1)
-   تشتغل فوق native.js: تضيف بلاطتين في #hub لأبو راكان بس، وتفتح كل واحدة صفحة زجاجية.
-   البيانات: collection forecast (inputs, history, current) و marketing (campaigns-history, ideas)، والافتتاحات من branches/current. */
-(function(){
-  'use strict';
-  if (window.__fmLoaded) return; window.__fmLoaded = true;
+(function(){"use strict";if(window.__fmLoaded)return;window.__fmLoaded=!0;const _=e=>document.getElementById(e),v=e=>String(e).replace(/\d/g,n=>"٠١٢٣٤٥٦٧٨٩"[n]),o=(e,n,t)=>{const i=document.createElement(e);return n&&(i.className=n),t!=null&&(i.innerHTML=t),i},s=(e,n,t)=>{const i=o(e,n);return i.textContent=t==null?"":String(t),i},be=e=>{if(e==null||e===""||isNaN(Number(e)))return"—";try{return new Intl.NumberFormat("ar-SA-u-nu-arab",{maximumFractionDigits:0}).format(Number(e))}catch{return String(e)}},ge=e=>e==null||isNaN(Number(e))?"":v(Math.round(Number(e)))+"٪",se=["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"],Z=e=>{if(!e)return"";const n=String(e).match(/(\d{4})-(\d{2})(?:-(\d{2}))?/);return n?(n[3]?v(parseInt(n[3],10))+" ":"")+se[parseInt(n[2],10)-1]+" "+v(n[1]):String(e)},U=e=>{try{const n=new Date(e);return isNaN(n)?"":new Intl.DateTimeFormat("ar-SA-u-ca-gregory-nu-arab",{timeZone:"Asia/Riyadh",day:"numeric",month:"short",hour:"numeric",minute:"2-digit"}).format(n)}catch{return""}},D={chev:'<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f3f5f9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg>',close:'<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f3f5f9" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>',send:'<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>',forecast:e=>'<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="'+(e||"#7ee0c3")+'" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20h18"/><path d="M4 16l5-6 4 3 7-8"/><path d="M16 5h4v4"/><path d="M14 20v-4M9 20v-6M19 20v-9" opacity=".55"/></svg>',marketing:e=>'<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="'+(e||"#ffd38a")+'" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11v2a2 2 0 0 0 2 2h2l6 4V5L7 9H5a2 2 0 0 0-2 2z"/><path d="M17 9a4 4 0 0 1 0 6"/><path d="M19.5 6.5a8 8 0 0 1 0 11" opacity=".6"/><path d="M8 15l1 5" opacity=".7"/></svg>'};function $(e,n){return new Promise(t=>{const i=Date.now();(function r(){let y=null;try{y=e()}catch{}if(y)return t(y);if(Date.now()-i>(n||6e5))return t(null);setTimeout(r,200)})()})}function K(e){try{const n=s("div","",e);n.setAttribute("style",'position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 90px);transform:translateX(-50%);z-index:950;padding:8px 14px;border-radius:999px;font:12px "IBM Plex Sans Arabic",system-ui,sans-serif;color:#f3f5f9;background:rgba(20,24,36,.92);border:1px solid rgba(255,255,255,.14);box-shadow:0 8px 24px rgba(0,0,0,.4);white-space:nowrap'),document.body.append(n),setTimeout(()=>n.remove(),3500)}catch{}}function ee(e){try{if(typeof window.__setPersonaUI=="function")window.__setPersonaUI("rizq",!0);else if(typeof window.__openAI=="function")window.__openAI(!0);else{const n=_("homeHead");n&&n.click()}if(e){const n=_("aiQ");n&&(n.value=e,n.dispatchEvent(new Event("input",{bubbles:!0})))}}catch{}}try{const e=document.createElement("style");e.textContent=`/* v2 التوقعات */
+.fcTop{display:flex;gap:10px;justify-content:space-between;flex-wrap:wrap}
+.fcIco{flex:1 1 150px;display:flex;gap:10px;align-items:center;text-align:start;padding:12px;border-radius:18px;cursor:pointer;font-family:inherit;color:#f3f5f9;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14)}
+.fcIco:focus-visible{outline:2px solid #9cc4ff;outline-offset:2px}
+.fcIco .fcIc{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;flex-shrink:0}
+.fcIco .fcIc svg{width:22px;height:22px}
+.fcIco.tg .fcIc{background:rgba(255,211,138,.16);color:#ffd38a}
+.fcIco.yr .fcIc{background:rgba(126,224,195,.16);color:#7ee0c3}
+.fcIco.mt .fcIc{background:rgba(156,196,255,.16);color:#9cc4ff}
+.fcIco.mt{flex-basis:100%}
+.fcTx{display:flex;flex-direction:column;gap:2px;min-width:0}
+.fcTx small{font-size:10.5px;color:#8f98ad}
+.fcTx b{font-family:"Readex Pro",sans-serif;font-size:17px;font-weight:700;font-variant-numeric:tabular-nums}
+.fcIco.mt .fcTx b{font-size:13px}
+.fcChip{font-style:normal;font-size:10.5px;color:#c9d0de}
+.fcIco.tg .fcChip{color:#ffd38a}
+.fcIco.yr .fcChip{color:#7ee0c3}
+.fcYears{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.fcYear{padding:12px 10px;border-radius:16px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.10);display:flex;flex-direction:column;gap:3px;min-width:0}
+.fcYear small{font-size:10.5px;color:#8f98ad}
+.fcYear b{font-family:"Readex Pro",sans-serif;font-size:16px;font-weight:700}
+.fcYear em{font-style:normal;font-size:11.5px;color:#7ee0c3;font-weight:600}
+.fcYear span{font-size:10px;color:#8f98ad;line-height:1.5}
+@media (max-width:420px){.fcYears{grid-template-columns:1fr}}
+.fcChartBox{padding:10px}
+.fcChart{width:100%;height:auto;display:block}
+.fcVerdict small{font-size:11px;color:#8f98ad}
+.fcVerdict b{font-family:"Readex Pro",sans-serif;font-size:16px!important;color:#ffd38a}
+.fcVerdict p{color:#eef1f7!important}
+.fmBr.lever .d b{color:#ffd38a}
+.fcFilt{padding:0 0 4px}
+.fcChips{display:flex;gap:5px;flex-wrap:wrap;margin:2px 0}
+.fcChips i{font-style:normal;font-size:10px;padding:1px 8px;border-radius:999px;border:1px solid rgba(255,255,255,.14);color:#c9d0de}
+.fcChips .st.mature{color:#7ee0c3;border-color:rgba(126,224,195,.4);background:rgba(126,224,195,.10)}
+.fcChips .st.ramp{color:#9cc4ff;border-color:rgba(156,196,255,.4);background:rgba(156,196,255,.10)}
+.fcChips .st.new{color:#c4b5fd;border-color:rgba(196,181,253,.4);background:rgba(196,181,253,.10)}
+.fcChips .st.pre{color:#8f98ad}
+.fcChips .be.ok{color:#7ee0c3;border-color:rgba(126,224,195,.4)}
+.fcChips .be.no{color:#ff8a5b;border-color:rgba(255,138,91,.45);background:rgba(255,138,91,.08)}
+.fcChips .be.na{color:#8f98ad}
+.fcB .d b{color:#eef1f7}
+.fmSheet .asLog>*{flex-shrink:0}.fcFilt{padding:2px 0 6px!important}
+`,document.head.append(e)}catch{}const Y=()=>document.body.dataset.role==="owner",c={fc:{},mk:{},branches:null,tiles:{},sheets:{},tab:{forecast:"overview",marketing:"ideas"},open:null};function re(){const e=_("hub");if(!e)return null;const n=e.querySelector(".arHideTile");if(n)return n;const t=Array.from(e.querySelectorAll("*")).find(i=>i.children.length===0&&/مجلس\s*الوكلاء/.test(i.textContent||""));if(t){let i=t;for(;i&&i.parentNode&&i.parentNode!==e&&!(i.parentNode.children.length>6);)i=i.parentNode;return i}return e.children.length?e.children[e.children.length-1]:null}function te(e){Array.from(e.attributes||[]).forEach(n=>{(/^(data-|on)/i.test(n.name)||n.name==="href"||n.name==="id"||n.name==="hidden")&&e.removeAttribute(n.name)})}function ne(e,n,t){const i=re();let r;if(i&&i.parentNode===_("hub")){r=i.cloneNode(!0),r.classList.remove("arHideTile"),te(r),r.querySelectorAll("*").forEach(te),r.style.display="";const d=Array.from(r.querySelectorAll("*")).filter(p=>p.children.length===0&&(p.textContent||"").trim()&&p.tagName!=="svg"&&p.tagName!=="SVG");let k=d.find(p=>/مجلس\s*الوكلاء/.test(p.textContent))||d.slice().sort((p,T)=>T.textContent.length-p.textContent.length)[0];k?k.textContent=n:r.append(s("span","",n)),d.forEach(p=>{p!==k&&(p.textContent="")});const A=r.querySelector("svg, img, .ic, .ico, .icon, i"),C=o("span","fmIc",t);A&&A!==k?A.replaceWith(C):r.prepend(C)}else r=o("button","fmTileFallback"),r.type="button",r.append(o("span","fmIc",t),s("span","",n));r.classList.add("fmTile","fm-"+e),r.setAttribute("role","button"),r.tabIndex=0,r.setAttribute("aria-label",n);let y=null;const h=Array.from(r.querySelectorAll("*")).find(d=>d.children.length===0&&!d.closest(".fmIc")&&!d.closest("svg")&&(d.textContent||"").trim()!==n);h?(y=h,y.classList.add("fmBadge","inline")):(y=o("span","fmBadge"),r.append(y));const g=d=>{d.preventDefault(),d.stopPropagation(),d.stopImmediatePropagation(),de(e)};return r.addEventListener("click",g,!0),r.addEventListener("keydown",d=>{(d.key==="Enter"||d.key===" ")&&g(d)}),{tile:r,badge:y}}function ae(){const e=_("hub");if(!e)return;const n=Y();if(e.querySelector(".fm-forecast")&&(!n||e.querySelector(".fm-marketing")))return;e.querySelectorAll(".fmTile").forEach(h=>h.remove());const t=ne("forecast","التوقعات المالية",D.forecast()),i=n?ne("marketing","الأفكار التسويقية",D.marketing()):null,r=e.querySelector(".arHideTile"),y=[t.tile].concat(i?[i.tile]:[]);r?r.after.apply(r,y):e.append.apply(e,y),c.tiles=i?{forecast:t,marketing:i}:{forecast:t},X()}function X(){if(c.tiles.forecast){const e=c.fc.inputs,n=c.fc.current;let t="";if(n&&n.status==="ready"&&n.target)t="المتوقع "+v(Math.round(n.target.expected/1e6))+" م";else if(e&&Array.isArray(e.files)){const i=e.files.filter(r=>r.status&&r.status!=="pending").length;t=i?v(i)+"/"+v(e.files.length)+" ملفات":"بانتظار الملفات"}c.tiles.forecast.badge.textContent=t}if(c.tiles.marketing){const e=c.mk.ideas&&Array.isArray(c.mk.ideas.items)?c.mk.ideas.items.filter(n=>n.status!=="archived"):[];c.tiles.marketing.badge.textContent=e.length?v(e.length)+(e.length===1?" فكرة":" أفكار"):""}}const ie={forecast:{title:"التوقعات المالية",sub:"الأداء والمستهدف وتوقعات ٢٠٢٧ · خاص",tabs:[["overview","الأداء"],["target","مستهدف الربع"],["y2027","توقعات ٢٠٢٧"],["branches","نضج الفروع"],["openings","الافتتاحات"],["method","المنهجية"]],icon:D.forecast("#7ee0c3")},marketing:{title:"الأفكار التسويقية",sub:"أفكار Rizq AI مبنية على الحملات السابقة · لأبو راكان بس",tabs:[["ideas","الأفكار"],["history","الحملات السابقة"],["add","أضف فكرة"]],icon:D.marketing("#ffd38a")}};function ce(e){const n=ie[e],t=o("div","fmSheet "+e);t.id="fmSheet-"+e,t.setAttribute("role","dialog"),t.setAttribute("aria-label",n.title);const i=o("div","asBg");i.addEventListener("click",V);const r=o("div","asFrame"),y=o("div","asIn");y.append(o("div","asGrip","<i></i>"));const h=o("div","asHead"),g=o("div","asWho"),d=o("div","asIcon",n.icon);d.querySelector("svg").setAttribute("width","22"),d.querySelector("svg").setAttribute("height","22");const k=o("div","asT");k.append(s("b","",n.title),s("span","",n.sub)),g.append(d,k);const A=o("button","asClose",D.close);A.type="button",A.setAttribute("aria-label","إغلاق"),A.addEventListener("click",V),h.append(g,A);const C=o("div","asTabs"),p={};n.tabs.forEach(([f,E])=>{const S=s("button","asTab",E);S.type="button",S.addEventListener("click",()=>{c.tab[e]=f,j(e)}),C.append(S),p[f]=S});const T=o("div","asWhen"),M=o("span");T.append(o("i"),M,o("i"));const a=o("div","asLog"),b=o("div","asFoot"),m=o("div","asAsk"),u=document.createElement("input");u.type="text",u.placeholder=e==="forecast"?"اسأل Rizq AI عن الفوركاست أو الافتتاحات…":"اسأل Rizq AI عن فكرة أو حملة…",u.setAttribute("aria-label",u.placeholder);const l=o("button",e==="forecast"?"forecast":"",D.send);l.type="button",l.setAttribute("aria-label","إرسال");const w=()=>{const f=u.value.trim();f&&(V(),ee(f),u.value="")};l.addEventListener("click",w),u.addEventListener("keydown",f=>{f.key==="Enter"&&w()}),m.append(u,l),b.append(m),y.append(h,C,T,a,b),r.append(y),t.append(i,o("div","asGlow1"),o("div","asGlow2"),r),document.body.append(t),c.sheets[e]={sh:t,tabEls:p,ws:M,log:a}}function de(e){c.sheets[e]||ce(e),c.open=e,j(e),c.sheets[e].sh.classList.add("open"),document.body.classList.add("arsheet")}function V(){Object.keys(c.sheets).forEach(e=>c.sheets[e].sh.classList.remove("open")),c.open=null,document.body.classList.remove("arsheet")}document.addEventListener("keydown",e=>{e.key==="Escape"&&c.open&&V()});const O=(e,n)=>{const t=o("div","asBox");return e&&t.append(s("b","",e)),(n||[]).forEach(i=>{if(i)if(Array.isArray(i)){const r=o("p");r.append(s("span","k",i[0]+": ")),r.append(document.createTextNode(i[1])),t.append(r)}else t.append(s("p","",i))}),t},P=e=>s("div","asEmpty",e);function j(e){const n=c.sheets[e];if(!n)return;const t=c.tab[e];Object.keys(n.tabEls).forEach(r=>n.tabEls[r].classList.toggle("on",r===t));const i=n.log;i.innerHTML="",e==="forecast"?pe(t,n):fe(t,n),i.scrollTop=0}function pe(e,n){const{log:t,ws:i}=n,r=c.fc.inputs,y=c.fc.history,h=c.fc.current,g=c.fc.maturity,d=h&&h.updatedAt||r&&r.updatedAt;if(i.textContent=e==="openings"?"شيت الفروع · "+(c.branches&&c.branches.date?Z(c.branches.date):""):"آخر تحديث · "+(d?U(d):"—"),!(h&&h.status==="ready"&&h.version>=2)&&e!=="openings"){t.append(P(h&&h.note?h.note:"التوقعات تنحسب الحين."));return}const A=a=>{c.tab.forecast=a,j("forecast")},C=a=>Number(a)/1e6,p=a=>{const b=Math.round(C(a)*10)/10;return(Math.abs(b)>=100||b===Math.round(b)?v(Math.round(b)):v(b.toFixed(1)).replace(".","٫"))+" مليون"},T=a=>a==null?"—":Math.abs(a)>=1e6?p(a):v(Math.round(a/1e3))+" ألف",M=(a,b)=>O(a,(b||[]).map(m=>"• "+m));if(e==="overview"){const a=h.target,b=h.y2027,m=o("div","fcTop"),u=(x,I,q,z,L,H)=>{const B=o("button","fcIco "+x);B.type="button",B.append(o("span","fcIc",I));const J=o("span","fcTx");return J.append(s("small","",q),s("b","",z),s("i","fcChip",L)),B.append(J),B.addEventListener("click",()=>A(H)),B};m.append(u("tg",'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/></svg>',a.label,p(a.value),"المتوقع "+p(a.expected)+" · "+a.verdict,"target"),u("yr",'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg>',b.label,p(b.base),"+"+v(b.growth.base)+"٪ · هدفك "+p(b.owner),"y2027")),t.append(m),t.append(s("div","fmQ","أداء السنوات"));const l=o("div","fcYears");(h.perf||[]).forEach(x=>{const I=o("div","fcYear");I.append(s("small","","أداء "+v(x.year)),s("b","",p(x.value)),s("em","","+"+v(x.growth)+"٪ عن "+v(x.vs)),s("span","",x.note||"")),l.append(I)}),t.append(l),t.append(s("div","fmQ","الإيراد ربع بربع (مليون ريال)"));const w=h.quarters||[],f=340,E=170,S=18,N=34,G=90,W=f/w.length,F=x=>S+(E-S-N)*(1-x/G);let R='<svg viewBox="0 0 '+f+" "+E+'" class="fcChart" role="img" aria-label="الإيراد ربع بربع">';[0,40,80].forEach(x=>{R+='<line x1="0" x2="'+f+'" y1="'+F(x)+'" y2="'+F(x)+'" stroke="rgba(255,255,255,.08)"/>'}),w.forEach((x,I)=>{const q=f-(I+1)*W+W*.18,z=W*.64,L=F(x[2]),H=x[3]?"rgba(126,224,195,.18)":x[0]==="2025"?"rgba(255,255,255,.28)":"#5aa2ff";R+='<rect x="'+q+'" y="'+L+'" width="'+z+'" height="'+(F(0)-L)+'" rx="4" fill="'+H+'"'+(x[3]?' stroke="#7ee0c3" stroke-dasharray="4 3"':"")+"/>",R+='<text x="'+(q+z/2)+'" y="'+(L-4)+'" text-anchor="middle" font-size="10" fill="#eef1f7">'+v(x[2]).replace(".","٫")+"</text>",R+='<text x="'+(q+z/2)+'" y="'+(E-N+13)+'" text-anchor="middle" font-size="9.5" fill="#8f98ad">'+x[1]+"</text>",(I===0||I===4)&&(R+='<text x="'+(f-(I+2)*W)+'" y="'+(E-6)+'" text-anchor="middle" font-size="10" fill="#c9d0de">'+v(x[0])+"</text>"),x[3]&&(R+='<line x1="'+(q-4)+'" x2="'+(q+z+4)+'" y1="'+F(80)+'" y2="'+F(80)+'" stroke="#ffd38a" stroke-width="2"/><text x="'+(q+z+6)+'" y="'+(F(80)+4)+'" text-anchor="start" font-size="9.5" fill="#ffd38a">٨٠</text>')}),R+="</svg>";const me=o("div","asBox fcChartBox",R);if(t.append(me),g&&Array.isArray(g.items)){const x=g.items,I=B=>x.filter(J=>J[4]===B).length,q=x.filter(B=>B[7]===!0).length,z=x.filter(B=>B[7]===!1).length,L=o("button","fcIco mt");L.type="button",L.append(o("span","fcIc",'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22V12"/><path d="M12 12C12 7 8 4 4 4c0 5 3 8 8 8z"/><path d="M12 14c0-4 3-7 8-7 0 4-3 7-8 7z"/></svg>'));const H=o("span","fcTx");H.append(s("small","","نضج الفروع ونقطة التعادل"),s("b","",v(I("mature"))+" ناضج · "+v(I("ramp"))+" ينمو · "+v(I("new"))+" جديد"),s("i","fcChip",v(q)+" حقق التعادل · "+v(z)+" لسا")),L.append(H),L.addEventListener("click",()=>A("branches")),t.append(L)}Array.isArray(h.sources)&&t.append(M("المصادر",h.sources))}else if(e==="target"){const a=h.target,b=o("div","asBox fcVerdict");b.append(s("small","",a.label+" ‏· "+p(a.value)),s("b","","المتوقع "+p(a.expected)+" (بين "+p(a.low)+" و"+p(a.high)+")"),s("p","",a.verdictLine)),t.append(b),t.append(s("div","fmQ","المتوقع شهر بشهر")),(a.months||[]).forEach(m=>{const u=o("div","fmBr"),l=o("div","n");l.append(s("b","",m.m),s("small","",m.note||""));const w=o("div","d");w.append(s("b","",p(m.v))),u.append(l,w),t.append(u)}),t.append(M("هل الـ٨٠ منطقية؟",a.why)),t.append(s("div","fmQ","كيف نقدر نوصل ٨٠ · الفجوة "+p(a.gap))),(a.levers||[]).forEach(m=>{const u=o("div","fmBr lever"),l=o("div","n");l.append(s("b","",m.t),s("small","",m.basis||""));const w=o("div","d");w.append(s("b","",m.v)),u.append(l,w),t.append(u)})}else if(e==="y2027"){const a=h.y2027,b=o("div","asBox fcVerdict");b.append(s("small","",a.label),s("b","","الأساسي "+p(a.base)+" · هدفك "+p(a.owner)),s("p","",a.verdictLine)),t.append(b);const m=o("div","fmStats");[["lo","متحفظ",a.low,a.growth.low],["","أساسي",a.base,a.growth.base],["hi","متفائل",a.high,a.growth.high]].forEach(([u,l,w,f])=>{const E=o("div","fmStat "+u);E.append(s("small","",l),s("b","",p(w)),s("small","","+"+v(f)+"٪")),m.append(E)}),t.append(m),t.append(s("div","fmQ","كيف انبنى الرقم")),(a.parts||[]).forEach(u=>{const l=o("div","fmBr"),w=o("div","n");w.append(s("b","",u.t),s("small","",u.basis||""));const f=o("div","d");f.append(s("b","",u.v)),l.append(w,f),t.append(l)}),t.append(M("متى ينضج الفرع ومتى يتعادل",a.maturity)),t.append(M("المخاطر",a.risks)),a.compare&&a.compare.length&&t.append(M("للمقارنة",a.compare))}else if(e==="branches"){if(!g||!Array.isArray(g.items)){t.append(P("بيانات الفروع ما وصلت."));return}const a={mature:"ناضج",ramp:"ينمو",new:"جديد",pre:"تحت الافتتاح"};t.append(O("",["النضج حسب عمر الفرع: جديد "+g.rules.new+"، ينمو "+g.rules.ramp+"، ناضج "+g.rules.mature+". التعادل من صافي ربح أغسطس بعد توزيع التسويق والكول سنتر والإدارة (نقطة التعادل ~"+T(g.breakevenRev)+" شهرياً). الرقم يمين = سرعة أكتوبر الشهرية."]));const b=o("div","asTabs fcFilt"),m=c.fcFilt||"all";[["all","الكل"],["nobe","لم يتعادل"],["be","حقق التعادل"],["mature","ناضج"],["ramp","ينمو"],["new","جديد"]].forEach(([l,w])=>{const f=s("button","asTab"+(m===l?" on":""),w);f.type="button",f.addEventListener("click",()=>{c.fcFilt=l,j("forecast")}),b.append(f)}),t.append(b);const u={};g.items.forEach(l=>{(m==="all"||m==="be"&&l[7]===!0||m==="nobe"&&l[7]===!1||l[4]===m)&&(u[l[1]]=u[l[1]]||[]).push(l)}),Object.keys(u).forEach(l=>{const w=o("div","fmQ");w.append(document.createTextNode(l)),w.append(s("span","",v(u[l].length)+" فرع")),t.append(w),u[l].forEach(f=>{const E=o("div","fmBr fcB"),S=o("div","n");S.append(s("b","",f[0]));const N=o("div","fcChips");N.append(s("i","st "+f[4],a[f[4]]||"")),N.append(s("i","be "+(f[7]===!0?"ok":f[7]===!1?"no":"na"),f[7]===!0?"حقق التعادل":f[7]===!1?"لم يتعادل":"بدري على الحكم")),S.append(N),S.append(s("small","",[f[2]?"افتتح "+Z(f[2]):"",f[3]!=null?v(Math.round(f[3]))+" شهر":"","صافي أغسطس "+T(f[6])].filter(Boolean).join(" · ")));const G=o("div","d");G.append(s("b","",f[8]?T(f[8]):"—"),s("small","","أكتوبر")),E.append(S,G),t.append(E)})}),t.append(O("",["المصدر: "+(g.source||"")]))}else if(e==="method"){const a=h&&h.method;if(!a){t.append(P("المنهجية تنكتب هنا."));return}t.append(O(a.name,[])),(a.steps||[]).forEach((b,m)=>{const u=o("div","fmStep");u.append(s("b","",v(m+1)),s("p","",String(b))),t.append(u)}),y&&y.note&&t.append(O("التاريخ",[y.note]))}else if(e==="openings"){const a=c.branches;if(!a||!Array.isArray(a.quarters)){t.append(P("ما قدرت أقرأ شيت الفروع."));return}if(Array.isArray(a.totals)){const b=o("div","fmStats");a.totals.slice(0,6).forEach(([m,u])=>{const l=o("div","fmStat");l.append(s("small","",m),s("b","",v(u))),b.append(l)}),t.append(b)}t.append(O("",["كل فرع هنا يدخل التوقعات من شهر مباشرته المتوقع، ويتأخر تلقائياً لو تأخر موعده. المصدر: شيت متابعة افتتاح الفروع."])),a.quarters.forEach(b=>{const m=(b.rows||[]).filter(l=>l.st!=="opened");if(!m.length)return;const u=o("div","fmQ");u.append(document.createTextNode(b.title||"")),u.append(s("span","",v(m.length)+" فرع لم يفتح")),t.append(u),m.forEach(l=>{const w=o("div","fmBr "+(l.st||"")),f=o("div","n");f.append(s("b","",l.name||""),s("small","",[l.region,l.stage].filter(Boolean).join(" · ")));const E=o("div","d");E.append(s("b","",l.expected?String(l.expected):"—"),s("small","",l.done!=null?v(l.done)+"/١٠ مراحل":""));const S=o("div","pr"),N=o("i");N.style.width=Math.round((Number(l.done)||0)/10*100)+"%",S.append(N),E.append(S),w.append(f,E),t.append(w)})})}}async function oe(e){if(!window.sb||!window.sb.from)return K("ما فيه اتصال بقاعدة البيانات"),!1;const n=Object.assign({},c.mk.ideas||{},{items:e,updatedAt:new Date().toISOString()});try{const{error:t}=await window.sb.from("docs").upsert({collection:"marketing",id:"ideas",data:n},{onConflict:"collection,id"});if(t)throw t;return c.mk.ideas=n,X(),!0}catch(t){return K("ما قدرت أحفظ: "+(t&&t.message?t.message:"")),!1}}function le(e){return e==="approved"?"معتمدة":e==="archived"?"مؤرشفة":e==="owner"?"فكرة أبو راكان":"مقترحة من Rizq AI"}function fe(e,n){const{log:t,ws:i}=n,r=c.mk.ideas,y=c.mk.campaigns;if(i.textContent="آخر تحديث · "+(r&&r.updatedAt?U(r.updatedAt):"—"),e==="ideas"){const h=r&&Array.isArray(r.items)?r.items.slice():[];if(!h.length){t.append(P("ما فيه أفكار بعد. Rizq AI يضيف أفكاره هنا بناءً على الحملات السابقة، وأنت تضيف من تبويب «أضف فكرة»."));return}const g={owner:0,approved:1,proposed:2,archived:3};h.sort((d,k)=>(g[d.status]??2)-(g[k.status]??2)||String(k.at||"").localeCompare(String(d.at||""))),h.forEach(d=>{const k=o("div","mkCard "+(d.status||"proposed")),A=o("div","mkTop");if(A.append(s("b","",d.title||""),s("span","mkChip",le(d.status))),k.append(A),d.why){const p=o("p");p.append(s("span","k","ليش: ")),p.append(document.createTextNode(d.why)),k.append(p)}if(d.basedOn){const p=o("p");p.append(s("span","k","مبنية على: ")),p.append(document.createTextNode(d.basedOn)),k.append(p)}if(d.owner){const p=o("p");p.append(s("span","k","المالك: ")),p.append(document.createTextNode(d.owner)),k.append(p)}const C=[d.by,d.at?U(d.at):""].filter(Boolean).join(" · ");if(C&&k.append(s("p","",C)),Y()){const p=o("div","mkAct"),T=async a=>{const b=(c.mk.ideas.items||[]).map(m=>m.id===d.id?Object.assign({},m,{status:a,decidedAt:new Date().toISOString()}):m);await oe(b)&&j("marketing")};if(d.status!=="approved"&&d.status!=="archived"){const a=s("button","ok","اعتمدها");a.type="button",a.addEventListener("click",()=>T("approved")),p.append(a)}if(d.status!=="archived"){const a=s("button","","أرشف");a.type="button",a.addEventListener("click",()=>T("archived")),p.append(a)}else{const a=s("button","undo","رجّعها");a.type="button",a.addEventListener("click",()=>T(d.by==="Rizq AI"?"proposed":"owner")),p.append(a)}const M=s("button","","ناقشها مع Rizq AI");M.type="button",M.addEventListener("click",()=>{V(),ee("بخصوص فكرة «"+(d.title||"")+"» في الأفكار التسويقية: ")}),p.append(M),k.append(p)}t.append(k)})}else if(e==="history"){const h=y&&Array.isArray(y.items)?y.items:[];if(y&&y.source&&t.append(O("",["المصدر: "+y.source])),!h.length){t.append(P("ما فيه حملات مسجلة بعد."));return}h.forEach(g=>t.append(O(g.title,[g.result?["النتيجة",g.result]:null,g.lesson?["الدرس",g.lesson]:null,g.source?["المصدر",g.source]:null])))}else if(e==="add"){const h=o("div","mkAdd"),g=document.createElement("textarea");g.placeholder="اكتب الفكرة أو الحملة اللي في بالك… Rizq AI يبني عليها ويقترح حولها.";const d=s("button","","أضف الفكرة");d.type="button",d.addEventListener("click",async()=>{const k=g.value.trim();if(!k)return;d.disabled=!0;const A={id:"o"+Date.now(),title:k,status:"owner",by:"أبو راكان",at:new Date().toISOString()},C=(c.mk.ideas&&c.mk.ideas.items||[]).concat([A]);await oe(C)&&(g.value="",K("انضافت الفكرة"),c.tab.marketing="ideas",j("marketing")),d.disabled=!1}),h.append(g,d,s("small","","أفكارك تنحفظ هنا لك بس، وRizq AI يقرأها ويقترح حولها في المجلس الليلي ومع تحديث الحملات.")),t.append(h)}}function Q(e){(e||[]).forEach(n=>{const t=Object.assign({},n.data||{}),i=n.collection,r=n.id;i==="forecast"?c.fc[r]=t:i==="marketing"?r==="ideas"?c.mk.ideas=t:r==="campaigns-history"&&(c.mk.campaigns=t):i==="branches"&&r==="current"&&(c.branches=t)}),X(),c.open&&!(c.open==="marketing"&&c.tab.marketing==="add")&&j(c.open)}async function ue(){try{if(window.sb&&window.sb.from){const{data:n}=await window.sb.from("docs").select("collection,id,data").in("collection",["forecast","marketing"]);Array.isArray(n)&&Q(n);const t=await window.sb.from("docs").select("collection,id,data").eq("collection","branches").eq("id","current");t&&Array.isArray(t.data)&&Q(t.data)}const e=window.claude&&window.claude.use?await window.claude.use("db"):null;e&&["forecast","marketing"].forEach(n=>{try{e.collection(n).onSnapshot(t=>{try{Q((t.docs||[]).map(i=>({collection:n,id:i.id,data:(typeof i.data=="function"?i.data():i.data)||{}})))}catch{}},()=>{})}catch{}})}catch{}}function he(){const e=c.fc.current,n=c.fc.maturity;if(!e||!e.target)return"";const t={تاريخ:e.asOf,الأداء:e.perf,الأرباع_بالمليون:e.quarters,مستهدف_الربع_الأخير:e.target,توقعات_2027:e.y2027,المنهجية:e.method,المصادر:e.sources};return n&&Array.isArray(n.items)&&(t.نضج_الفروع={القواعد:n.rules,نقطة_التعادل_الشهرية:n.breakevenRev,الأعمدة:n.cols,الفروع:n.items}),`
 
-  const $ = id => document.getElementById(id);
-  const AR = n => String(n).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
-  const el = (tag, cls, html) => { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; };
-  const txt = (tag, cls, s) => { const e = el(tag, cls); e.textContent = s == null ? '' : String(s); return e; };
-  const NUM = n => { if (n == null || n === '' || isNaN(Number(n))) return '—'; try { return new Intl.NumberFormat('ar-SA-u-nu-arab', { maximumFractionDigits: 0 }).format(Number(n)); } catch (e) { return String(n); } };
-  const PCT = n => (n == null || isNaN(Number(n))) ? '' : AR(Math.round(Number(n))) + '٪';
-  const MONTHS = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
-  const fmtDate = s => { if (!s) return ''; const m = String(s).match(/(\d{4})-(\d{2})(?:-(\d{2}))?/); if (!m) return String(s); return (m[3] ? AR(parseInt(m[3], 10)) + ' ' : '') + MONTHS[parseInt(m[2], 10) - 1] + ' ' + AR(m[1]); };
-  const fmtTime = iso => { try { const d = new Date(iso); if (isNaN(d)) return ''; return new Intl.DateTimeFormat('ar-SA-u-ca-gregory-nu-arab', { timeZone: 'Asia/Riyadh', day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' }).format(d); } catch (e) { return ''; } };
-  const SVG = {
-    chev: '<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f3f5f9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg>',
-    close: '<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f3f5f9" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>',
-    send: '<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>',
-    forecast: (c)=>'<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="'+(c||'#7ee0c3')+'" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20h18"/><path d="M4 16l5-6 4 3 7-8"/><path d="M16 5h4v4"/><path d="M14 20v-4M9 20v-6M19 20v-9" opacity=".55"/></svg>',
-    marketing: (c)=>'<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="'+(c||'#ffd38a')+'" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11v2a2 2 0 0 0 2 2h2l6 4V5L7 9H5a2 2 0 0 0-2 2z"/><path d="M17 9a4 4 0 0 1 0 6"/><path d="M19.5 6.5a8 8 0 0 1 0 11" opacity=".6"/><path d="M8 15l1 5" opacity=".7"/></svg>'
-  };
-  function waitFor(fn, ms) { return new Promise(res => { const t0 = Date.now(); (function p() { let v = null; try { v = fn(); } catch (e) {} if (v) return res(v); if (Date.now() - t0 > (ms || 600000)) return res(null); setTimeout(p, 200); })(); }); }
-  function toast(msg) { try { const t = txt('div', '', msg); t.setAttribute('style', 'position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 90px);transform:translateX(-50%);z-index:950;padding:8px 14px;border-radius:999px;font:12px "IBM Plex Sans Arabic",system-ui,sans-serif;color:#f3f5f9;background:rgba(20,24,36,.92);border:1px solid rgba(255,255,255,.14);box-shadow:0 8px 24px rgba(0,0,0,.4);white-space:nowrap'); document.body.append(t); setTimeout(() => t.remove(), 3500); } catch (e) {} }
-  function openChat(prefill) {
-    try {
-      if (typeof window.__setPersonaUI === 'function') window.__setPersonaUI('rizq', true);
-      else if (typeof window.__openAI === 'function') window.__openAI(true);
-      else { const h = $('homeHead'); if (h) h.click(); }
-      if (prefill) { const q = $('aiQ'); if (q) { q.value = prefill; q.dispatchEvent(new Event('input', { bubbles: true })); } }
-    } catch (e) {}
-  }
-  const isOwner = () => document.body.dataset.role === 'owner';
-
-  /* ---------- state ---------- */
-  const S = { fc: {}, mk: {}, branches: null, tiles: {}, sheets: {}, tab: { forecast: 'inputs', marketing: 'ideas' }, open: null };
-
-  /* ---------- البلاطات ---------- */
-  function findTemplateTile() {
-    const hub = $('hub'); if (!hub) return null;
-    const hidden = hub.querySelector('.arHideTile'); if (hidden) return hidden;
-    const leaf = Array.from(hub.querySelectorAll('*')).find(n => n.children.length === 0 && /مجلس\s*الوكلاء/.test(n.textContent || ''));
-    if (leaf) { let t = leaf; while (t && t.parentNode && t.parentNode !== hub && !(t.parentNode.children.length > 6)) t = t.parentNode; return t; }
-    return hub.children.length ? hub.children[hub.children.length - 1] : null;
-  }
-  function stripAttrs(n) { Array.from(n.attributes || []).forEach(a => { if (/^(data-|on)/i.test(a.name) || a.name === 'href' || a.name === 'id' || a.name === 'hidden') n.removeAttribute(a.name); }); }
-  function makeTile(key, label, icon) {
-    const tpl = findTemplateTile(); let tile;
-    if (tpl && tpl.parentNode === $('hub')) {
-      tile = tpl.cloneNode(true);
-      tile.classList.remove('arHideTile'); stripAttrs(tile); tile.querySelectorAll('*').forEach(stripAttrs);
-      tile.style.display = '';
-      const leaves = Array.from(tile.querySelectorAll('*')).filter(n => n.children.length === 0 && (n.textContent || '').trim() && n.tagName !== 'svg' && n.tagName !== 'SVG');
-      let lab = leaves.find(n => /مجلس\s*الوكلاء/.test(n.textContent)) || leaves.slice().sort((a, b) => b.textContent.length - a.textContent.length)[0];
-      if (lab) lab.textContent = label; else tile.append(txt('span', '', label));
-      leaves.forEach(n => { if (n !== lab) n.textContent = ''; });
-      const ic = tile.querySelector('svg, img, .ic, .ico, .icon, i');
-      const w = el('span', 'fmIc', icon);
-      if (ic && ic !== lab) ic.replaceWith(w); else tile.prepend(w);
-    } else {
-      tile = el('button', 'fmTileFallback'); tile.type = 'button';
-      tile.append(el('span', 'fmIc', icon), txt('span', '', label));
-    }
-    tile.classList.add('fmTile', 'fm-' + key); tile.setAttribute('role', 'button'); tile.tabIndex = 0; tile.setAttribute('aria-label', label);
-    let badge = null;
-    const spare = Array.from(tile.querySelectorAll('*')).find(n => n.children.length === 0 && !n.closest('.fmIc') && !n.closest('svg') && (n.textContent || '').trim() !== label);
-    if (spare) { badge = spare; badge.classList.add('fmBadge', 'inline'); } else { badge = el('span', 'fmBadge'); tile.append(badge); }
-    const go = e => { e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation(); openSheet(key); };
-    tile.addEventListener('click', go, true);
-    tile.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') go(e); });
-    return { tile, badge };
-  }
-  function mountTiles() {
-    const hub = $('hub'); if (!hub) return;
-    if (hub.querySelector('.fm-forecast') && hub.querySelector('.fm-marketing')) return;
-    hub.querySelectorAll('.fmTile').forEach(n => n.remove());
-    const f = makeTile('forecast', 'التوقعات المالية', SVG.forecast());
-    const m = makeTile('marketing', 'الأفكار التسويقية', SVG.marketing());
-    const tpl = hub.querySelector('.arHideTile');
-    if (tpl) tpl.after(f.tile, m.tile); else hub.append(f.tile, m.tile);
-    S.tiles = { forecast: f, marketing: m };
-    paintTiles();
-  }
-  function paintTiles() {
-    if (S.tiles.forecast) {
-      const inp = S.fc.inputs, cur = S.fc.current;
-      let b = '';
-      if (cur && cur.status === 'ready') b = 'جاهز';
-      else if (inp && Array.isArray(inp.files)) { const got = inp.files.filter(f => f.status && f.status !== 'pending').length; b = got ? AR(got) + '/' + AR(inp.files.length) + ' ملفات' : 'بانتظار الملفات'; }
-      S.tiles.forecast.badge.textContent = b;
-    }
-    if (S.tiles.marketing) {
-      const items = (S.mk.ideas && Array.isArray(S.mk.ideas.items)) ? S.mk.ideas.items.filter(i => i.status !== 'archived') : [];
-      S.tiles.marketing.badge.textContent = items.length ? AR(items.length) + (items.length === 1 ? ' فكرة' : ' أفكار') : '';
-    }
-  }
-
-  /* ---------- الصفحة الزجاجية ---------- */
-  const META = {
-    forecast: { title: 'التوقعات المالية', sub: 'الفوركاست · لأبو راكان بس', tabs: [['inputs', 'المدخلات'], ['forecast', 'الفوركاست'], ['openings', 'الافتتاحات'], ['history', 'التاريخ'], ['method', 'المنهجية']], icon: SVG.forecast('#7ee0c3') },
-    marketing: { title: 'الأفكار التسويقية', sub: 'أفكار Rizq AI مبنية على الحملات السابقة · لأبو راكان بس', tabs: [['ideas', 'الأفكار'], ['history', 'الحملات السابقة'], ['add', 'أضف فكرة']], icon: SVG.marketing('#ffd38a') }
-  };
-  function buildSheet(key) {
-    const m = META[key];
-    const sh = el('div', 'fmSheet ' + key); sh.id = 'fmSheet-' + key; sh.setAttribute('role', 'dialog'); sh.setAttribute('aria-label', m.title);
-    const bg = el('div', 'asBg'); bg.addEventListener('click', closeSheet);
-    const frame = el('div', 'asFrame'); const inn = el('div', 'asIn');
-    inn.append(el('div', 'asGrip', '<i></i>'));
-    const head = el('div', 'asHead'); const who = el('div', 'asWho');
-    const ico = el('div', 'asIcon', m.icon); ico.querySelector('svg').setAttribute('width', '22'); ico.querySelector('svg').setAttribute('height', '22');
-    const t = el('div', 'asT'); t.append(txt('b', '', m.title), txt('span', '', m.sub));
-    who.append(ico, t);
-    const close = el('button', 'asClose', SVG.close); close.type = 'button'; close.setAttribute('aria-label', 'إغلاق'); close.addEventListener('click', closeSheet);
-    head.append(who, close);
-    const tabs = el('div', 'asTabs'); const tabEls = {};
-    m.tabs.forEach(([k, label]) => { const b = txt('button', 'asTab', label); b.type = 'button'; b.addEventListener('click', () => { S.tab[key] = k; paintSheet(key); }); tabs.append(b); tabEls[k] = b; });
-    const when = el('div', 'asWhen'); const ws = el('span'); when.append(el('i'), ws, el('i'));
-    const log = el('div', 'asLog');
-    const foot = el('div', 'asFoot');
-    const ask = el('div', 'asAsk');
-    const inp = document.createElement('input'); inp.type = 'text';
-    inp.placeholder = key === 'forecast' ? 'اسأل Rizq AI عن الفوركاست أو الافتتاحات…' : 'اسأل Rizq AI عن فكرة أو حملة…';
-    inp.setAttribute('aria-label', inp.placeholder);
-    const sendB = el('button', key === 'forecast' ? 'forecast' : '', SVG.send); sendB.type = 'button'; sendB.setAttribute('aria-label', 'إرسال');
-    const go = () => { const v = inp.value.trim(); if (!v) return; closeSheet(); openChat(v); inp.value = ''; };
-    sendB.addEventListener('click', go); inp.addEventListener('keydown', e => { if (e.key === 'Enter') go(); });
-    ask.append(inp, sendB); foot.append(ask);
-    inn.append(head, tabs, when, log, foot); frame.append(inn);
-    sh.append(bg, el('div', 'asGlow1'), el('div', 'asGlow2'), frame);
-    document.body.append(sh);
-    S.sheets[key] = { sh, tabEls, ws, log };
-  }
-  function openSheet(key) { if (!S.sheets[key]) buildSheet(key); S.open = key; paintSheet(key); S.sheets[key].sh.classList.add('open'); document.body.classList.add('arsheet'); }
-  function closeSheet() { Object.keys(S.sheets).forEach(k => S.sheets[k].sh.classList.remove('open')); S.open = null; document.body.classList.remove('arsheet'); }
-  document.addEventListener('keydown', e => { if (e.key === 'Escape' && S.open) closeSheet(); });
-
-  const box = (title, lines) => { const b = el('div', 'asBox'); if (title) b.append(txt('b', '', title)); (lines || []).forEach(l => { if (!l) return; if (Array.isArray(l)) { const p = el('p'); p.append(txt('span', 'k', l[0] + ': ')); p.append(document.createTextNode(l[1])); b.append(p); } else b.append(txt('p', '', l)); }); return b; };
-  const empty = s => txt('div', 'asEmpty', s);
-
-  function paintSheet(key) {
-    const sheet = S.sheets[key]; if (!sheet) return;
-    const tab = S.tab[key]; Object.keys(sheet.tabEls).forEach(k => sheet.tabEls[k].classList.toggle('on', k === tab));
-    const log = sheet.log; log.innerHTML = '';
-    if (key === 'forecast') paintForecast(tab, sheet); else paintMarketing(tab, sheet);
-    log.scrollTop = 0;
-  }
-
-  /* ---------- التوقعات المالية ---------- */
-  function paintForecast(tab, sheet) {
-    const { log, ws } = sheet; const inp = S.fc.inputs, hist = S.fc.history, cur = S.fc.current;
-    const upd = (cur && cur.updatedAt) || (inp && inp.updatedAt);
-    ws.textContent = (tab === 'openings' ? 'شيت الفروع · ' + (S.branches && S.branches.date ? fmtDate(S.branches.date) : '') : 'آخر تحديث · ' + (upd ? fmtTime(upd) : '—'));
-    if (tab === 'inputs') {
-      if (!inp) { log.append(empty('ما وصلتني بيانات المدخلات بعد.')); return; }
-      if (inp.note) log.append(box('', [inp.note]));
-      const list = el('div', 'fmList');
-      (inp.files || []).forEach(f => {
-        const st = f.status === 'processed' ? 'processed' : (f.status === 'received' ? 'received' : 'pending');
-        const r = el('div', 'fmRow ' + st); r.append(el('i'), txt('span', '', f.name), txt('small', '', st === 'processed' ? 'دخل التاريخ' : (st === 'received' ? 'وصل' : 'بانتظارك')));
-        list.append(r);
-      });
-      log.append(txt('div', 'fmQ', 'الملفات المطلوبة'), list);
-      if (Array.isArray(inp.outputs) && inp.outputs.length) log.append(box('اللي بيطلع من هالأيقونة', inp.outputs.map(o => '• ' + o)));
-    } else if (tab === 'method') {
-      const m = cur && cur.method;
-      if (!m) { log.append(empty('المنهجية تنكتب هنا.')); return; }
-      log.append(box(m.name, m.note ? [m.note] : []));
-      (m.steps || []).forEach((s, i) => { const st = el('div', 'fmStep'); st.append(txt('b', '', AR(i + 1)), txt('p', '', String(s).replace(/^[٠-٩0-9]+[\.\-:]\s*/, ''))); log.append(st); });
-    } else if (tab === 'history') {
-      if (!hist || hist.status === 'empty' || !hist.years || !Object.keys(hist.years).length) { log.append(empty(hist && hist.note ? hist.note : 'التاريخ يُبنى من ملفات أبو راكان: دخل شهري لكل فرع ٢٠٢٥ و٢٠٢٦.')); return; }
-      Object.keys(hist.years).sort().reverse().forEach(y => {
-        const yr = hist.years[y] || {}; const months = yr.months || {};
-        const vals = Object.keys(months).map(k => Number(months[k]) || 0); const max = Math.max.apply(null, vals.concat([1]));
-        const b = el('div', 'asBox'); b.append(txt('b', '', 'سنة ' + AR(y) + (yr.total != null ? ' · ' + NUM(yr.total) : '') + (yr.audited ? ' · ' + yr.audited : '')));
-        const g = el('div', 'fmMonths');
-        for (let i = 1; i <= 12; i++) { const k = String(i).padStart(2, '0'); const v = months[k] != null ? months[k] : months[String(i)]; const c = el('div', 'fmMonth' + (v == null ? ' empty' : '')); c.append(txt('small', '', MONTHS[i - 1].slice(0, 5)), txt('b', '', v == null ? '—' : NUM(v))); const bar = el('div', 'fmBar'); const fi = el('i'); fi.style.width = v == null ? '0%' : Math.round((Number(v) / max) * 100) + '%'; bar.append(fi); c.append(bar); g.append(c); }
-        b.append(g); if (yr.note) b.append(txt('p', '', yr.note)); log.append(b);
-      });
-      const br = hist.branches || {}; const names = Object.keys(br);
-      if (names.length) { log.append(txt('div', 'fmQ', 'الفروع (' + AR(names.length) + ')')); names.sort((a, b) => (Number(br[b].total) || 0) - (Number(br[a].total) || 0)).slice(0, 60).forEach(n => { const r = el('div', 'fmBr'); const nn = el('div', 'n'); nn.append(txt('b', '', n), txt('small', '', (br[n].region || '') + (br[n].opened ? ' · افتتح ' + fmtDate(br[n].opened) : ''))); const d = el('div', 'd'); d.append(txt('b', '', NUM(br[n].total)), txt('small', '', br[n].months ? AR(Object.keys(br[n].months).length) + ' شهر' : '')); r.append(nn, d); log.append(r); }); }
-    } else if (tab === 'forecast') {
-      if (!cur || cur.status !== 'ready' || !Array.isArray(cur.horizon) || !cur.horizon.length) { log.append(empty(cur && cur.note ? cur.note : 'بانتظار التاريخ وفوركاست أبو راكان المتوقع.')); if (cur && cur.method) log.append(box('كيف بينبني', [cur.method.name])); return; }
-      if (cur.intro) log.append(box('', [cur.intro]));
-      log.append(txt('div', 'fmQ', 'الثلاثة شهور القادمة'));
-      cur.horizon.forEach(h => {
-        const b = el('div', 'asBox'); b.append(txt('b', '', h.label || fmtDate(h.month)));
-        const st = el('div', 'fmStats');
-        [['lo', 'متحفظ', h.low], ['', 'أساسي', h.base], ['hi', 'متفائل', h.high]].forEach(([c, l, v]) => { const s = el('div', 'fmStat ' + c); s.append(txt('small', '', l), txt('b', '', NUM(v))); st.append(s); });
-        b.append(st);
-        if (h.owner != null) b.append(txt('p', '', 'فوركاست أبو راكان: ' + NUM(h.owner) + (h.base ? ' (الفرق ' + PCT(((h.base - h.owner) / h.owner) * 100) + ')' : '')));
-        if (h.basis) b.append(txt('p', '', h.basis));
-        if (h.openings) b.append(txt('p', '', 'فروع تدخل هالشهر: ' + h.openings));
-        log.append(b);
-      });
-      if (cur.y2027) { const y = cur.y2027; log.append(txt('div', 'fmQ', 'سنة ٢٠٢٧')); const b = el('div', 'asBox'); b.append(txt('b', '', 'الدخل المتوقع ' + (y.branches ? '· ' + AR(y.branches) + ' فرع' : ''))); const st = el('div', 'fmStats'); [['lo', 'متحفظ', y.low], ['', 'أساسي', y.base], ['hi', 'متفائل', y.high]].forEach(([c, l, v]) => { const s = el('div', 'fmStat ' + c); s.append(txt('small', '', l), txt('b', '', NUM(v))); st.append(s); }); b.append(st); if (y.note) b.append(txt('p', '', y.note)); log.append(b); }
-      if (cur.backtest) log.append(box('التحقق الخلفي', [cur.backtest]));
-      if (Array.isArray(cur.assumptions) && cur.assumptions.length) log.append(box('الافتراضات', cur.assumptions.map(a => '• ' + a)));
-    } else if (tab === 'openings') {
-      const b = S.branches;
-      if (!b || !Array.isArray(b.quarters)) { log.append(empty('ما قدرت أقرأ شيت الفروع.')); return; }
-      if (Array.isArray(b.totals)) { const st = el('div', 'fmStats'); b.totals.slice(0, 6).forEach(([l, v]) => { const s = el('div', 'fmStat'); s.append(txt('small', '', l), txt('b', '', AR(v))); st.append(s); }); log.append(st); }
-      log.append(box('', ['كل فرع هنا يدخل الفوركاست من شهر مباشرته المتوقع على منحنى نضج الفروع الجديدة، ويتأخر تلقائياً لو تأخر موعده. المصدر: شيت متابعة افتتاح الفروع.']));
-      b.quarters.forEach(q => {
-        const rows = (q.rows || []).filter(r => r.st !== 'opened');
-        if (!rows.length) return;
-        const h = el('div', 'fmQ'); h.append(document.createTextNode(q.title || '')); h.append(txt('span', '', AR(rows.length) + ' فرع لم يفتح')); log.append(h);
-        rows.forEach(r => {
-          const row = el('div', 'fmBr ' + (r.st || '')); const n = el('div', 'n'); n.append(txt('b', '', r.name || ''), txt('small', '', [r.region, r.stage].filter(Boolean).join(' · ')));
-          const d = el('div', 'd'); d.append(txt('b', '', r.expected ? String(r.expected) : '—'), txt('small', '', r.done != null ? AR(r.done) + '/١٠ مراحل' : ''));
-          const pr = el('div', 'pr'); const pi = el('i'); pi.style.width = Math.round(((Number(r.done) || 0) / 10) * 100) + '%'; pr.append(pi); d.append(pr);
-          row.append(n, d); log.append(row);
-        });
-      });
-    }
-  }
-
-  /* ---------- الأفكار التسويقية ---------- */
-  async function saveIdeas(items) {
-    if (!window.sb || !window.sb.from) { toast('ما فيه اتصال بقاعدة البيانات'); return false; }
-    const data = Object.assign({}, S.mk.ideas || {}, { items, updatedAt: new Date().toISOString() });
-    try {
-      const { error } = await window.sb.from('docs').upsert({ collection: 'marketing', id: 'ideas', data }, { onConflict: 'collection,id' });
-      if (error) throw error;
-      S.mk.ideas = data; paintTiles(); return true;
-    } catch (e) { toast('ما قدرت أحفظ: ' + (e && e.message ? e.message : '')); return false; }
-  }
-  function statusLabel(s) { return s === 'approved' ? 'معتمدة' : (s === 'archived' ? 'مؤرشفة' : (s === 'owner' ? 'فكرة أبو راكان' : 'مقترحة من Rizq AI')); }
-  function paintMarketing(tab, sheet) {
-    const { log, ws } = sheet; const ideas = S.mk.ideas, hist = S.mk.campaigns;
-    ws.textContent = 'آخر تحديث · ' + ((ideas && ideas.updatedAt) ? fmtTime(ideas.updatedAt) : '—');
-    if (tab === 'ideas') {
-      const items = (ideas && Array.isArray(ideas.items)) ? ideas.items.slice() : [];
-      if (!items.length) { log.append(empty('ما فيه أفكار بعد. Rizq AI يضيف أفكاره هنا بناءً على الحملات السابقة، وأنت تضيف من تبويب «أضف فكرة».')); return; }
-      const order = { owner: 0, approved: 1, proposed: 2, archived: 3 };
-      items.sort((a, b) => (order[a.status] ?? 2) - (order[b.status] ?? 2) || String(b.at || '').localeCompare(String(a.at || '')));
-      items.forEach(it => {
-        const c = el('div', 'mkCard ' + (it.status || 'proposed'));
-        const top = el('div', 'mkTop'); top.append(txt('b', '', it.title || ''), txt('span', 'mkChip', statusLabel(it.status))); c.append(top);
-        if (it.why) { const p = el('p'); p.append(txt('span', 'k', 'ليش: ')); p.append(document.createTextNode(it.why)); c.append(p); }
-        if (it.basedOn) { const p = el('p'); p.append(txt('span', 'k', 'مبنية على: ')); p.append(document.createTextNode(it.basedOn)); c.append(p); }
-        if (it.owner) { const p = el('p'); p.append(txt('span', 'k', 'المالك: ')); p.append(document.createTextNode(it.owner)); c.append(p); }
-        const meta = [it.by, it.at ? fmtTime(it.at) : ''].filter(Boolean).join(' · '); if (meta) c.append(txt('p', '', meta));
-        if (isOwner()) {
-          const act = el('div', 'mkAct');
-          const setSt = async st => { const all = (S.mk.ideas.items || []).map(x => x.id === it.id ? Object.assign({}, x, { status: st, decidedAt: new Date().toISOString() }) : x); if (await saveIdeas(all)) paintSheet('marketing'); };
-          if (it.status !== 'approved' && it.status !== 'archived') { const ok = txt('button', 'ok', 'اعتمدها'); ok.type = 'button'; ok.addEventListener('click', () => setSt('approved')); act.append(ok); }
-          if (it.status !== 'archived') { const ar = txt('button', '', 'أرشف'); ar.type = 'button'; ar.addEventListener('click', () => setSt('archived')); act.append(ar); }
-          else { const un = txt('button', 'undo', 'رجّعها'); un.type = 'button'; un.addEventListener('click', () => setSt(it.by === 'Rizq AI' ? 'proposed' : 'owner')); act.append(un); }
-          const ask = txt('button', '', 'ناقشها مع Rizq AI'); ask.type = 'button'; ask.addEventListener('click', () => { closeSheet(); openChat('بخصوص فكرة «' + (it.title || '') + '» في الأفكار التسويقية: '); }); act.append(ask);
-          c.append(act);
-        }
-        log.append(c);
-      });
-    } else if (tab === 'history') {
-      const items = (hist && Array.isArray(hist.items)) ? hist.items : [];
-      if (hist && hist.source) log.append(box('', ['المصدر: ' + hist.source]));
-      if (!items.length) { log.append(empty('ما فيه حملات مسجلة بعد.')); return; }
-      items.forEach(it => log.append(box(it.title, [it.result ? ['النتيجة', it.result] : null, it.lesson ? ['الدرس', it.lesson] : null, it.source ? ['المصدر', it.source] : null])));
-    } else if (tab === 'add') {
-      const w = el('div', 'mkAdd');
-      const ta = document.createElement('textarea'); ta.placeholder = 'اكتب الفكرة أو الحملة اللي في بالك… Rizq AI يبني عليها ويقترح حولها.';
-      const b = txt('button', '', 'أضف الفكرة'); b.type = 'button';
-      b.addEventListener('click', async () => {
-        const v = ta.value.trim(); if (!v) return; b.disabled = true;
-        const item = { id: 'o' + Date.now(), title: v, status: 'owner', by: 'أبو راكان', at: new Date().toISOString() };
-        const all = ((S.mk.ideas && S.mk.ideas.items) || []).concat([item]);
-        if (await saveIdeas(all)) { ta.value = ''; toast('انضافت الفكرة'); S.tab.marketing = 'ideas'; paintSheet('marketing'); }
-        b.disabled = false;
-      });
-      w.append(ta, b, txt('small', '', 'أفكارك تنحفظ هنا لك بس، وRizq AI يقرأها ويقترح حولها في المجلس الليلي ومع تحديث الحملات.'));
-      log.append(w);
-    }
-  }
-
-  /* ---------- البيانات ---------- */
-  function absorb(rows) {
-    (rows || []).forEach(r => {
-      const d = Object.assign({}, r.data || {}); const c = r.collection, id = r.id;
-      if (c === 'forecast') S.fc[id] = d;
-      else if (c === 'marketing') { if (id === 'ideas') S.mk.ideas = d; else if (id === 'campaigns-history') S.mk.campaigns = d; }
-      else if (c === 'branches' && id === 'current') S.branches = d;
-    });
-    paintTiles(); if (S.open && !(S.open === 'marketing' && S.tab.marketing === 'add')) paintSheet(S.open);
-  }
-  async function load() {
-    try {
-      if (window.sb && window.sb.from) {
-        const { data } = await window.sb.from('docs').select('collection,id,data').in('collection', ['forecast', 'marketing']);
-        if (Array.isArray(data)) absorb(data);
-        const b = await window.sb.from('docs').select('collection,id,data').eq('collection', 'branches').eq('id', 'current');
-        if (b && Array.isArray(b.data)) absorb(b.data);
-      }
-      const db = window.claude && window.claude.use ? await window.claude.use('db') : null;
-      if (db) ['forecast', 'marketing'].forEach(c => { try { db.collection(c).onSnapshot(sn => { try { absorb((sn.docs || []).map(x => ({ collection: c, id: x.id, data: (typeof x.data === 'function' ? x.data() : x.data) || {} }))); } catch (e) {} }, () => {}); } catch (e) {} });
-    } catch (e) {}
-  }
-
-  /* ---------- تشغيل ---------- */
-  (async () => {
-    await waitFor(() => $('hub') && $('hub').children.length, 600000);
-    await waitFor(() => document.body.dataset.role, 8000);
-    if (!isOwner()) return;
-    await new Promise(r => setTimeout(r, 600));
-    mountTiles();
-    const hub = $('hub');
-    new MutationObserver(() => { if (!hub.querySelector('.fm-forecast') || !hub.querySelector('.fm-marketing')) mountTiles(); }).observe(hub, { childList: true });
-    load();
-  })();
-})();
+التوقعات المالية (سرية — تقدر تناقشها مع اللي يكلمك لأنه مصرّح له يشوف أيقونة التوقعات المالية، ولا تذكرها لأي زميل غير مصرّح، ولا تنسخها لذاكرتك العامة):
+`+JSON.stringify(t).slice(0,2e4)}try{const e=window.fetch;window.fetch=function(n,t){try{const i=typeof n=="string"?n:n&&n.url||"";if(/\/functions\/v1\/rizq/.test(i)&&t&&typeof t.body=="string"&&c.fc.current&&!(typeof window.__persona=="function"&&window.__persona()==="rawan")){const r=JSON.parse(t.body),y=he();y&&(typeof r.system=="string"?r.system+=y:Array.isArray(r.system)?r.system.push({type:"text",text:y}):r.system=y,t=Object.assign({},t,{body:JSON.stringify(r)}))}}catch{}return e.call(this,n,t)}}catch{}(async()=>{if(await $(()=>_("hub")&&_("hub").children.length,6e5),await $(()=>document.body.dataset.role,8e3),!Y())try{const n=await window.sb.from("docs").select("collection,id,data").eq("collection","forecast");if(!n||!Array.isArray(n.data)||!n.data.length)return;Q(n.data)}catch{return}await new Promise(n=>setTimeout(n,600)),ae();const e=_("hub");new MutationObserver(()=>{(!e.querySelector(".fm-forecast")||Y()&&!e.querySelector(".fm-marketing"))&&ae()}).observe(e,{childList:!0}),ue()})()})();
