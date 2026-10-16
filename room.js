@@ -1,4 +1,4 @@
-/* غرفة الوكلاء — الشريط العلوي الزجاجي (v5 · مدمجة في native.js)
+/* غرفة الوكلاء — الشريط العلوي الزجاجي (v7)
    يشتغل فوق native.js: يستبدل بطاقتي Rizq AI وRawan AI بغرفة زجاجية وحدة لأبو راكان وروان،
    ويعرض غرفة مقفلة لأي زميل ما عنده وكيل. البيانات من collection council. */
 (function(){
@@ -81,7 +81,7 @@
     card.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openSheet(); } });
     S.card = { card, link, pb, ps };
     const h1 = $('homeHead'), h2 = $('homeHead2');
-    if (h1) h1.hidden = true; if (h2) h2.hidden = true;
+    if (h1) { h1.hidden = true; h1.classList.add('arHide'); } if (h2) { h2.hidden = true; h2.classList.add('arHide'); }
     const anchor = $('homeMeta') || $('hub');
     if (anchor && anchor.parentNode === wrap) wrap.insertBefore(card, anchor); else wrap.prepend(card);
     paintCard();
@@ -116,7 +116,7 @@
     row.append(btn, txt('span', 'arMuted', 'طلب وكيل: من أبو راكان'));
     inn.append(ghost, top, lock, row);
     card.append(inn);
-    const h1 = $('homeHead'); if (h1) h1.hidden = true;
+    const h1 = $('homeHead'); if (h1) { h1.hidden = true; h1.classList.add('arHide'); }
     const anchor = $('homeMeta') || $('hub');
     if (anchor && anchor.parentNode === wrap) wrap.insertBefore(card, anchor); else wrap.prepend(card);
   }
@@ -241,7 +241,7 @@
     return null;
   }
   (async () => {
-    try { console.log('[agentRoom] v5 loaded'); } catch (e) {}
+    try { console.log('[agentRoom] v7 loaded'); } catch (e) {}
     const wrap = await waitFor(() => { const h = $('homeHead') || deepFind('homeHead'); return h && h.parentNode ? h.parentNode : null; });
     if (!wrap) { try { console.warn('[agentRoom] homeHead not found'); } catch (e) {} return; }
     await waitFor(() => document.body.dataset.role || window.__isBoss || document.body.dataset.rawan, 8000);

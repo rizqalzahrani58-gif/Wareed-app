@@ -1,4 +1,4 @@
-/* غرفة الوكلاء — الشريط العلوي الزجاجي (v1) */
+/* غرفة الوكلاء — الشريط العلوي الزجاجي (v7) */
 #agentRoom{position:relative;margin:0 0 12px;border-radius:26px;padding:1px;cursor:pointer;-webkit-tap-highlight-color:transparent;
   background:linear-gradient(135deg,rgba(90,162,255,.55) 0%,rgba(255,255,255,.10) 45%,rgba(167,139,250,.55) 100%);
   box-shadow:0 24px 60px rgba(0,0,0,.55),0 0 40px rgba(90,162,255,.10);font-family:"IBM Plex Sans Arabic","Readex Pro",system-ui,sans-serif;color:#f3f5f9}
@@ -113,3 +113,11 @@ body.arsheet{overflow:hidden}
 #councilSec .arNote{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:8px 0 12px;padding:10px 14px;border-radius:14px;font-size:12px;line-height:1.6;color:#e6eaf2;cursor:pointer;
   background:linear-gradient(135deg,rgba(90,162,255,.14),rgba(167,139,250,.14));border:1px solid rgba(255,255,255,.12)}
 #councilSec details.cday.arDaily{display:none}
+
+/* v7: التغلب على قواعد hubmode في native.css (خصوصية أعلى) */
+body.appmode.hubmode .wrap>#agentRoom:not(#a):not(#b):not(#c):not(#d){display:block!important}
+body.appmode:not(.hubmode) .wrap>#agentRoom:not(#a):not(#b):not(#c):not(#d){display:none!important}
+body.appmode.hubmode .wrap>#homeHead.arHide:not(#a):not(#b):not(#c):not(#d),
+body.appmode.hubmode .wrap>#homeHead2.arHide:not(#a):not(#b):not(#c):not(#d),
+.wrap>#homeHead.arHide:not(#a):not(#b):not(#c):not(#d),
+.wrap>#homeHead2.arHide:not(#a):not(#b):not(#c):not(#d){display:none!important}
