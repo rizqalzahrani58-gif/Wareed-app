@@ -1,4 +1,4 @@
-/* وريد · ذاكرة Rawan AI: روان تغذي وكيلتها بأي معلومة (نص طويل، ملف نصي، صورة عبر المحادثة) · v1
+/* وريد · ذاكرة Rawan AI: روان تغذي وكيلتها بأي معلومة (نص طويل، ملف نصي، صورة عبر المحادثة) · v2 (الدايرة صارت شات مباشر)
    - أداة teach_rawan لـ Rawan AI تحفظ المعلومة كاملة في rawanmem.kb
    - كل المعلومات تدخل سياق Rawan AI (الأحدث أولاً، بحد ٤٠ ألف حرف)
    - دايرة «ذاكرة Rawan AI» لروان وأبو راكان: تضيف، تعدّل، تحذف، وترفع ملف نصي
@@ -42,82 +42,119 @@
     ['- تحفظين ملاحظاتها الخاصة بأداة remember_private', RULE]
   ]);
 
-  /* ---------- الواجهة: دايرة «ذاكرة Rawan AI» ---------- */
+  /* ---------- الواجهة: دايرة «ذاكرة Rawan AI» كشات مباشر · v2 ---------- */
   const css = '#rkbSheet{position:fixed;inset:0;z-index:900;display:flex;align-items:flex-end;justify-content:center;background:rgba(0,0,0,.55);font-family:"IBM Plex Sans Arabic","Readex Pro",system-ui,sans-serif;color:#f3f5f9}' +
-    '#rkbSheet[hidden]{display:none!important}#rkbSheet .rb{width:100%;max-width:40em;max-height:92vh;overflow:auto;background:#161a23;border:1px solid #272d3a;border-radius:22px 22px 0 0;padding:1.1em 1em calc(1.2em + env(safe-area-inset-bottom,0px));box-sizing:border-box}' +
-    '#rkbSheet h3{margin:0 0 .2em;font-size:1.15em}#rkbSheet .sub{margin:0 0 .9em;color:#8f98ad;font-size:.88em;line-height:1.6}' +
-    '#rkbSheet input,#rkbSheet textarea{font:inherit;width:100%;box-sizing:border-box;background:#1e2330;color:#f3f5f9;border:1px solid #272d3a;border-radius:12px;padding:.65em .8em;margin-bottom:.55em}#rkbSheet textarea{min-height:8em;resize:vertical;line-height:1.6}' +
-    '#rkbSheet .row{display:flex;gap:.5em;flex-wrap:wrap;align-items:center;margin-bottom:.8em}#rkbSheet button{font:inherit;border:0;border-radius:12px;padding:.6em 1.1em;cursor:pointer;background:#272d3a;color:#f3f5f9}#rkbSheet button.pri{background:#a78bfa;color:#140f24;font-weight:600}#rkbSheet button:disabled{opacity:.5}' +
-    '#rkbSheet .it{border:1px solid #272d3a;border-radius:14px;padding:.7em .8em;margin-bottom:.55em;background:#1a1f2a}#rkbSheet .it b{display:block;margin-bottom:.25em}#rkbSheet .it .m{color:#8f98ad;font-size:.78em;margin-bottom:.35em}#rkbSheet .it p{margin:0;white-space:pre-wrap;line-height:1.6;font-size:.9em;max-height:9em;overflow:auto}' +
-    '#rkbSheet .it .act{display:flex;gap:.4em;margin-top:.5em}#rkbSheet .it .act button{padding:.35em .8em;font-size:.82em}#rkbSheet .msg{color:#c4b5fd;font-size:.85em;min-height:1.2em;margin:0 0 .6em}#rkbSheet .x{float:left;background:transparent;font-size:1.3em;padding:0 .3em}';
+    '#rkbSheet[hidden]{display:none!important}' +
+    '#rkbSheet .rb{width:100%;max-width:40em;height:92vh;height:92dvh;display:flex;flex-direction:column;background:#161a23;border:1px solid #272d3a;border-bottom:0;border-radius:22px 22px 0 0;box-sizing:border-box;overflow:hidden}' +
+    '#rkbSheet .hd{display:flex;align-items:center;gap:.6em;padding:.9em 1em .7em;border-bottom:1px solid #272d3a}' +
+    '#rkbSheet .av{width:2.3em;height:2.3em;border-radius:50%;display:grid;place-items:center;background:#2a2244;font-size:1.15em;flex:none}' +
+    '#rkbSheet .hd h3{margin:0;font-size:1.05em}#rkbSheet .hd .s{color:#8f98ad;font-size:.76em}#rkbSheet .hd .tt{flex:1;min-width:0}' +
+    '#rkbSheet .x{background:transparent;border:0;color:#f3f5f9;font-size:1.5em;padding:0 .3em;cursor:pointer}' +
+    '#rkbSheet .ch{flex:1;overflow-y:auto;padding:1em .9em;display:flex;flex-direction:column;gap:.55em;-webkit-overflow-scrolling:touch}' +
+    '#rkbSheet .hint{align-self:center;text-align:center;color:#8f98ad;font-size:.84em;line-height:1.7;max-width:22em;margin:auto 0}' +
+    '#rkbSheet .day{align-self:center;color:#8f98ad;font-size:.72em;background:#1e2330;border-radius:999px;padding:.2em .8em;margin:.3em 0}' +
+    '#rkbSheet .bw{display:flex;flex-direction:column;align-items:flex-start;max-width:86%}#rkbSheet .bw.ai{align-self:flex-end;align-items:flex-end}' +
+    '#rkbSheet .bb{background:#6d4fd8;color:#fff;border-radius:18px 18px 18px 6px;padding:.6em .85em;white-space:pre-wrap;word-break:break-word;line-height:1.65;font-size:.93em;cursor:pointer}' +
+    '#rkbSheet .bw.ai .bb{background:#1e2330;color:#dfe3ee;border-radius:18px 18px 6px 18px;cursor:default;font-size:.85em}' +
+    '#rkbSheet .bb.lng{max-height:14em;overflow:hidden;position:relative}#rkbSheet .bb.lng.op{max-height:none}' +
+    '#rkbSheet .bb .fn{display:block;font-size:.78em;opacity:.8;margin-bottom:.25em}' +
+    '#rkbSheet .mt{color:#8f98ad;font-size:.7em;margin-top:.2em;padding:0 .3em}' +
+    '#rkbSheet .ac{display:none;gap:.4em;margin-top:.3em}#rkbSheet .bw.sel .ac{display:flex}' +
+    '#rkbSheet .ac button{font:inherit;font-size:.78em;border:0;border-radius:999px;padding:.3em .9em;background:#272d3a;color:#f3f5f9;cursor:pointer}#rkbSheet .ac button.dl{color:#fca5a5}' +
+    '#rkbSheet .ed{display:none;align-items:center;gap:.5em;padding:.45em 1em;background:#1e2330;border-top:1px solid #272d3a;font-size:.8em;color:#c4b5fd}#rkbSheet .ed.on{display:flex}#rkbSheet .ed span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}#rkbSheet .ed button{background:transparent;border:0;color:#8f98ad;font:inherit;cursor:pointer}' +
+    '#rkbSheet .cp{display:flex;align-items:flex-end;gap:.45em;padding:.6em .7em calc(.6em + env(safe-area-inset-bottom,0px));border-top:1px solid #272d3a;background:#161a23}' +
+    '#rkbSheet textarea{flex:1;font:inherit;font-size:16px;min-height:2.6em;max-height:9em;resize:none;box-sizing:border-box;background:#1e2330;color:#f3f5f9;border:1px solid #272d3a;border-radius:20px;padding:.6em .9em;line-height:1.5;outline:none}' +
+    '#rkbSheet .cb{flex:none;width:2.6em;height:2.6em;border-radius:50%;border:0;display:grid;place-items:center;cursor:pointer;font-size:1.05em;background:#272d3a;color:#f3f5f9}#rkbSheet .cb.go{background:#a78bfa;color:#140f24;font-weight:700}#rkbSheet .cb:disabled{opacity:.45}';
   const st = document.createElement('style'); st.textContent = css; document.head.append(st);
 
   const $ = id => document.getElementById(id);
   const allowed = () => { const b = document.body.dataset; return !b.nasser && (b.role === 'owner' || b.role === 'trusted' || !!b.rawan); };
   const ar = n => String(n).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
-  let editId = null, cache = [];
+  let editId = null, cache = [], busy = false;
 
   async function readDoc(){ const { data, error } = await window.sb.from('docs').select('data').eq('collection', 'rawanmem').eq('id', RID).maybeSingle(); if(error) throw error; return (data && data.data) || {}; }
   async function writeKb(fn){ const d = await readDoc(); const kb = fn(Array.isArray(d.kb) ? d.kb.slice() : []).slice(-300); const { error } = await window.sb.from('docs').upsert({ collection: 'rawanmem', id: RID, data: { ...d, by: RID, kb, updatedAt: new Date().toISOString() } }, { onConflict: 'collection,id' }); if(error) throw error; cache = kb; return kb; }
 
   function el(t, a, ...k){ const e = document.createElement(t); if(a) for(const x in a){ if(x === 'class') e.className = a[x]; else if(x.startsWith('on')) e[x] = a[x]; else e.setAttribute(x, a[x]); } k.forEach(c => c != null && e.append(c)); return e; }
+  function by(){ return document.body.dataset.role === 'owner' ? 'أبو راكان' : 'روان'; }
+  function tm(iso){ try{ return new Date(iso).toLocaleTimeString('ar-SA-u-ca-gregory', { hour: 'numeric', minute: '2-digit' }); }catch(e){ return ''; } }
+  function dy(iso){ try{ return new Date(iso).toLocaleDateString('ar-SA-u-ca-gregory', { weekday: 'long', day: 'numeric', month: 'long' }); }catch(e){ return String(iso || '').slice(0, 10); } }
+  function grow(){ const t = $('rkbIn'); t.style.height = 'auto'; t.style.height = Math.min(t.scrollHeight, 144) + 'px'; $('rkbGo').disabled = busy || !t.value.trim(); }
 
   function build(){
     if($('rkbSheet')) return;
     const s = el('div', { id: 'rkbSheet', hidden: '' });
     s.addEventListener('click', e => { if(e.target === s) s.hidden = true; });
     const fi = el('input', { type: 'file', accept: '.txt,.md,.csv,.json,text/plain', hidden: '' });
-    fi.onchange = () => { const f = fi.files && fi.files[0]; if(!f) return; const r = new FileReader(); r.onload = () => { $('rkbC').value = String(r.result || '').slice(0, 20000); if(!$('rkbT').value) $('rkbT').value = f.name.replace(/\.[^.]+$/, ''); msg('انقرأ الملف، راجعيه واضغطي حفظ.'); }; r.readAsText(f); fi.value = ''; };
+    fi.onchange = () => { const f = fi.files && fi.files[0]; if(!f) return; const r = new FileReader(); r.onload = () => { const c = String(r.result || '').trim(); if(c) send(c, f.name.replace(/\.[^.]+$/, ''), f.name); }; r.readAsText(f); fi.value = ''; };
+    const ta = el('textarea', { id: 'rkbIn', rows: '1', placeholder: 'اكتبي المعلومة لـ Rawan AI…', maxlength: '20000' });
+    ta.addEventListener('input', grow);
     s.append(el('div', { class: 'rb' },
-      el('button', { type: 'button', class: 'x', 'aria-label': 'إغلاق', onclick: () => { s.hidden = true; } }, '×'),
-      el('h3', {}, 'ذاكرة Rawan AI'),
-      el('p', { class: 'sub' }, 'اكتبي أو الصقي أي معلومة تبين Rawan AI تعرفها، أو ارفعي ملف نصي. تقدرين بعد ترسلين لها صورة في المحادثة وتقولين «احفظيها». المعلومات تشوفها Rawan AI بس، ومعها روان وأبو راكان.'),
-      el('input', { id: 'rkbT', placeholder: 'العنوان (مثال: إجراء طلبات الصيانة)', maxlength: '120' }),
-      el('input', { id: 'rkbP', placeholder: 'الموضوع (اختياري): زملاء، موردين، إجراءات…', maxlength: '40' }),
-      el('textarea', { id: 'rkbC', placeholder: 'المعلومة كاملة…', maxlength: '20000' }),
-      el('p', { class: 'msg', id: 'rkbM' }),
-      el('div', { class: 'row' },
-        el('button', { type: 'button', class: 'pri', id: 'rkbSave', onclick: save }, 'حفظ'),
-        el('button', { type: 'button', onclick: () => fi.click() }, 'رفع ملف نصي'),
-        el('button', { type: 'button', id: 'rkbCancel', hidden: '', onclick: reset }, 'إلغاء التعديل')),
-      fi,
-      el('div', { id: 'rkbList' })));
+      el('div', { class: 'hd' },
+        el('div', { class: 'av', 'aria-hidden': 'true' }, '🧠'),
+        el('div', { class: 'tt' }, el('h3', {}, 'ذاكرة Rawan AI'), el('div', { class: 's', id: 'rkbS' }, 'تشوفها روان وأبو راكان بس')),
+        el('button', { type: 'button', class: 'x', 'aria-label': 'إغلاق', onclick: () => { s.hidden = true; } }, '×')),
+      el('div', { class: 'ch', id: 'rkbCh' }),
+      el('div', { class: 'ed', id: 'rkbEd' }, el('span', { id: 'rkbEdT' }), el('button', { type: 'button', onclick: cancelEdit }, 'إلغاء')),
+      el('div', { class: 'cp' },
+        el('button', { type: 'button', class: 'cb', 'aria-label': 'رفع ملف نصي', title: 'رفع ملف نصي', onclick: () => fi.click() }, '📎'),
+        ta,
+        el('button', { type: 'button', class: 'cb go', id: 'rkbGo', 'aria-label': 'إرسال', disabled: '', onclick: () => send($('rkbIn').value.trim()) }, '↑')),
+      fi));
     document.body.append(s);
   }
-  function msg(t){ const m = $('rkbM'); if(m) m.textContent = t || ''; }
-  function reset(){ editId = null; $('rkbT').value = ''; $('rkbP').value = ''; $('rkbC').value = ''; $('rkbCancel').hidden = true; $('rkbSave').textContent = 'حفظ'; }
-  function by(){ return document.body.dataset.role === 'owner' ? 'أبو راكان' : 'روان'; }
 
-  async function save(){
-    const c = $('rkbC').value.trim(), t = $('rkbT').value.trim();
-    if(!c){ msg('اكتبي المعلومة أول.'); return; }
-    const b = $('rkbSave'); b.disabled = true; msg('');
+  function cancelEdit(){ editId = null; $('rkbEd').classList.remove('on'); $('rkbIn').value = ''; grow(); }
+
+  async function send(c, title, fname){
+    if(!c || busy) return;
+    busy = true; grow();
+    const old = editId ? cache.find(k => k.id === editId) : null;
+    const it = { id: editId || ('k' + Date.now()), title: (title || (old && old.title) || c.split('\n')[0]).slice(0, 120), content: c.slice(0, 20000), topic: old ? (old.topic || '') : '', at: new Date().toISOString(), by: by() };
+    if(fname) it.file = fname.slice(0, 120);
     try{
-      const it = { id: editId || ('k' + Date.now()), title: (t || c.split('\n')[0]).slice(0, 120), content: c.slice(0, 20000), topic: $('rkbP').value.trim().slice(0, 40), at: new Date().toISOString(), by: by() };
-      await writeKb(kb => { const x = kb.findIndex(k => k.id === it.id); if(x >= 0) kb[x] = it; else kb.push(it); return kb; });
-      reset(); render(); msg('انحفظت، وRawan AI صارت تعرفها.');
-    }catch(e){ msg('ما انحفظت: ' + (e && e.message ? e.message : 'خطأ')); }
-    b.disabled = false;
+      await writeKb(kb => { const x = kb.findIndex(k => k.id === it.id); if(x >= 0) kb.splice(x, 1); kb.push(it); return kb; });
+      if(!fname || editId){ $('rkbIn').value = ''; }
+      editId = null; $('rkbEd').classList.remove('on');
+      render(it.id, old ? 'عدّلتها ✓ وصرت أعتمد على النسخة الجديدة.' : 'حفظتها ✓');
+    }catch(e){ render(null, null, 'ما انحفظت: ' + (e && e.message ? e.message : 'خطأ في الاتصال') + '. جربي مرة ثانية.'); }
+    busy = false; grow();
   }
 
-  function render(){
-    const L = $('rkbList'); if(!L) return; L.replaceChildren();
-    L.append(el('p', { class: 'sub' }, cache.length ? ('المحفوظ: ' + ar(cache.length) + ' معلومة') : 'ما فيه معلومات محفوظة لسا.'));
-    cache.slice().reverse().forEach(k => {
-      L.append(el('div', { class: 'it' },
-        el('b', {}, k.title || 'بدون عنوان'),
-        el('div', { class: 'm' }, [k.topic, k.by, String(k.at || '').slice(0, 10)].filter(Boolean).join(' · ')),
-        el('p', {}, k.content || ''),
-        el('div', { class: 'act' },
-          el('button', { type: 'button', onclick: () => { editId = k.id; $('rkbT').value = k.title || ''; $('rkbP').value = k.topic || ''; $('rkbC').value = k.content || ''; $('rkbCancel').hidden = false; $('rkbSave').textContent = 'حفظ التعديل'; $('rkbSheet').querySelector('.rb').scrollTop = 0; } }, 'تعديل'),
-          el('button', { type: 'button', onclick: async () => { if(!confirm('تحذفين «' + (k.title || '') + '» من ذاكرة Rawan AI؟')) return; try{ await writeKb(kb => kb.filter(x => x.id !== k.id)); render(); msg('انحذفت.'); }catch(e){ msg('ما انحذفت.'); } } }, 'حذف'))));
+  function bubble(k, ack){
+    const long = (k.content || '').length > 600 || (k.content || '').split('\n').length > 10;
+    const bb = el('div', { class: 'bb' + (long ? ' lng' : '') }, k.file ? el('span', { class: 'fn' }, '📄 ' + k.file) : null, k.content || '');
+    const w = el('div', { class: 'bw' }, bb,
+      el('div', { class: 'mt' }, [k.by, tm(k.at)].filter(Boolean).join(' · ')),
+      el('div', { class: 'ac' },
+        long ? el('button', { type: 'button', onclick: e => { e.stopPropagation(); bb.classList.toggle('op'); } }, 'عرض كامل') : null,
+        el('button', { type: 'button', onclick: e => { e.stopPropagation(); editId = k.id; $('rkbEdT').textContent = 'تعديل: ' + (k.title || ''); $('rkbEd').classList.add('on'); const t = $('rkbIn'); t.value = k.content || ''; grow(); t.focus(); } }, 'تعديل'),
+        el('button', { type: 'button', class: 'dl', onclick: async e => { e.stopPropagation(); if(!confirm('تحذفين هالمعلومة من ذاكرة Rawan AI؟')) return; try{ await writeKb(kb => kb.filter(x => x.id !== k.id)); if(editId === k.id) cancelEdit(); render(null, null, 'حذفتها من ذاكرتي.'); }catch(er){ render(null, null, 'ما انحذفت، جربي مرة ثانية.'); } } }, 'حذف')));
+    bb.onclick = () => { const on = w.classList.contains('sel'); document.querySelectorAll('#rkbCh .bw.sel').forEach(x => x.classList.remove('sel')); if(!on) w.classList.add('sel'); };
+    const out = [w];
+    if(ack) out.push(el('div', { class: 'bw ai' }, el('div', { class: 'bb' }, ack), el('div', { class: 'mt' }, 'Rawan AI')));
+    return out;
+  }
+
+  function render(ackId, ackTxt, sysTxt){
+    const C = $('rkbCh'); if(!C) return; C.replaceChildren();
+    $('rkbS').textContent = cache.length ? ('المحفوظ ' + ar(cache.length) + ' معلومة · تشوفها روان وأبو راكان بس') : 'تشوفها روان وأبو راكان بس';
+    if(!cache.length) C.append(el('div', { class: 'hint' }, 'اكتبي لي أي معلومة تبيني أعرفها، بأي طول، وأرسليها. أحفظها كاملة وأعتمد عليها.\nتقدرين بعد ترفعين ملف نصي من 📎، أو ترسلين صورة في محادثتي وتقولين «احفظيها».\nاضغطي على أي رسالة لتعديلها أو حذفها.'));
+    let last = '';
+    cache.forEach(k => {
+      const d = String(k.at || '').slice(0, 10);
+      if(d !== last){ last = d; C.append(el('div', { class: 'day' }, dy(k.at))); }
+      bubble(k, k.id === ackId ? ackTxt : null).forEach(n => C.append(n));
     });
+    if(sysTxt) C.append(el('div', { class: 'bw ai' }, el('div', { class: 'bb' }, sysTxt), el('div', { class: 'mt' }, 'Rawan AI')));
+    requestAnimationFrame(() => { C.scrollTop = C.scrollHeight; });
   }
 
   async function open(){
-    build(); $('rkbSheet').hidden = false; msg('…');
-    try{ const d = await readDoc(); cache = Array.isArray(d.kb) ? d.kb : []; msg(''); }catch(e){ msg('ما قدرت أحمّل الذاكرة.'); }
-    render();
+    build(); $('rkbSheet').hidden = false; cancelEdit();
+    const C = $('rkbCh'); C.replaceChildren(el('div', { class: 'hint' }, '…'));
+    try{ const d = await readDoc(); cache = Array.isArray(d.kb) ? d.kb.slice().sort((a, b) => String(a.at).localeCompare(String(b.at))) : []; render(); }
+    catch(e){ C.replaceChildren(el('div', { class: 'hint' }, 'ما قدرت أحمّل الذاكرة. تأكدي من النت وافتحيها مرة ثانية.')); }
   }
 
   function tile(){
