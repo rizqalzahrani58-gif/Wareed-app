@@ -1,4 +1,4 @@
-/* غرفة الوكلاء — الشريط العلوي الزجاجي (v3)
+/* غرفة الوكلاء — الشريط العلوي الزجاجي (v5 · مدمجة في native.js)
    يشتغل فوق native.js: يستبدل بطاقتي Rizq AI وRawan AI بغرفة زجاجية وحدة لأبو راكان وروان،
    ويعرض غرفة مقفلة لأي زميل ما عنده وكيل. البيانات من collection council. */
 (function(){
@@ -241,11 +241,9 @@
     return null;
   }
   (async () => {
-    try { console.log('[agentRoom] v3 loaded'); } catch (e) {}
-    toast('غرفة الوكلاء v3 وصلت');
-    setTimeout(() => { if (!$('agentRoom')) { const r = document.body.dataset.role || '-'; const w = !!document.querySelector('.wrap'); const ids = Array.from(document.querySelectorAll('[id]')).map(n => n.id).filter(i => /home|hub|wrap|ai/i.test(i)).slice(0, 8).join(','); toast('تشخيص: role=' + r + ' wrap=' + w + ' ids=' + (ids || 'لا شي')); } }, 6000);
+    try { console.log('[agentRoom] v5 loaded'); } catch (e) {}
     const wrap = await waitFor(() => { const h = $('homeHead') || deepFind('homeHead'); return h && h.parentNode ? h.parentNode : null; });
-    if (!wrap) { toast('غرفة الوكلاء: ما لقيت بطاقات الوكلاء'); return; }
+    if (!wrap) { try { console.warn('[agentRoom] homeHead not found'); } catch (e) {} return; }
     await waitFor(() => document.body.dataset.role || window.__isBoss || document.body.dataset.rawan, 8000);
     if (!privileged()) { buildLocked(wrap); return; }
     buildCard(wrap);
