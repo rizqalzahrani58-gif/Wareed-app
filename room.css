@@ -1,4 +1,4 @@
-/* غرفة الوكلاء — الشريط العلوي الزجاجي (v11) */
+/* غرفة الوكلاء — الشريط العلوي الزجاجي (v12) */
 #agentRoom{position:relative;margin:0 0 12px;border-radius:26px;padding:1px;cursor:pointer;-webkit-tap-highlight-color:transparent;
   background:linear-gradient(135deg,rgba(90,162,255,.55) 0%,rgba(255,255,255,.10) 45%,rgba(167,139,250,.55) 100%);
   box-shadow:0 24px 60px rgba(0,0,0,.55),0 0 40px rgba(90,162,255,.10);font-family:"IBM Plex Sans Arabic","Readex Pro",system-ui,sans-serif;color:#f3f5f9}
@@ -135,22 +135,72 @@ body.appmode.hubmode .wrap>#homeHead2.arHide:not(#a):not(#b):not(#c):not(#d),
 #agentDeck .adTrack::-webkit-scrollbar{display:none}
 #agentDeck .adTrack>*{scroll-snap-align:start;flex:0 0 100%}
 #agentDeck .adTrack>#agentRoom{margin:0}
-#agentDeck .adTrack>#agentLearn{flex:0 0 88%}
+#agentDeck .adTrack>#agentLearn{flex:0 0 100%}
+#agentDeck.classOnly{margin-bottom:12px}#agentDeck.classOnly .adDots{display:none}
 #agentDeck .adDots{display:flex;justify-content:center;gap:6px;padding:8px 0 4px}
 #agentDeck .adDots i{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.22);transition:all .2s}
 #agentDeck .adDots i.on{width:18px;border-radius:3px;background:linear-gradient(90deg,#5aa2ff,#a78bfa)}
-#agentLearn{position:relative;border-radius:22px;padding:1px;cursor:pointer;-webkit-tap-highlight-color:transparent;
-  background:linear-gradient(135deg,rgba(62,208,184,.55) 0%,rgba(255,255,255,.10) 50%,rgba(90,162,255,.40) 100%);box-shadow:0 18px 44px rgba(0,0,0,.5)}
-#agentLearn .alIn{position:relative;overflow:hidden;border-radius:21px;padding:12px 14px;display:flex;flex-direction:column;gap:10px;
-  background:linear-gradient(160deg,rgba(255,255,255,.09) 0%,rgba(255,255,255,.04) 40%,rgba(16,20,32,.74) 100%);
+#agentLearn{position:relative;border-radius:26px;padding:1px;cursor:pointer;-webkit-tap-highlight-color:transparent;
+  background:linear-gradient(135deg,rgba(62,208,184,.6) 0%,rgba(255,255,255,.10) 45%,rgba(90,162,255,.5) 100%);box-shadow:0 24px 60px rgba(0,0,0,.55),0 0 40px rgba(62,208,184,.10)}
+#agentLearn .alIn{position:relative;overflow:hidden;border-radius:25px;padding:14px 16px 14px;display:flex;flex-direction:column;gap:12px;
+  background:linear-gradient(160deg,rgba(255,255,255,.10) 0%,rgba(255,255,255,.04) 40%,rgba(16,20,32,.72) 100%);
   -webkit-backdrop-filter:blur(22px) saturate(140%);backdrop-filter:blur(22px) saturate(140%)}
-#agentLearn .alIn::before{content:"";position:absolute;top:0;right:24px;left:24px;height:1px;background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.5) 50%,rgba(255,255,255,0))}
-#agentLearn .alTop{display:flex;align-items:center;justify-content:space-between;gap:8px}
-#agentLearn .alTitle{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600}
+#agentLearn .alIn::before{content:"";position:absolute;top:0;right:24px;left:24px;height:1px;background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.55) 50%,rgba(255,255,255,0))}
+#agentLearn .alTop{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:28px}
+#agentLearn .alDot{width:8px;height:8px;border-radius:50%;background:#6b7280}
+#agentLearn.live .alDot{background:#3ed0b8;box-shadow:0 0 12px #3ed0b8;animation:arPulse 2.2s ease-in-out infinite}
+#agentLearn .alTitle{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;flex:1}
 #agentLearn .alTag{font-size:11px;color:#c9d0de;padding:4px 10px;border-radius:999px;background:rgba(62,208,184,.14);border:1px solid rgba(62,208,184,.35);white-space:nowrap}
+#agentLearn .alSeats{display:flex;align-items:flex-start;justify-content:center;gap:6px;padding:0 2px}
+#agentLearn .alSeat{display:flex;flex-direction:column;align-items:center;gap:6px;width:84px;background:none;border:0;padding:0;color:inherit;font:inherit;cursor:pointer}
+#agentLearn .alAv{position:relative;width:56px;height:56px;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;font-family:"Readex Pro",sans-serif;font-weight:700;font-size:22px;color:#fff}
+#agentLearn .alAv img{width:100%;height:100%;object-fit:cover;display:block}
+#agentLearn .alAv.rizq{background:radial-gradient(circle at 30% 30%,#8dbcff,#2f6fd6 70%);box-shadow:0 0 0 3px rgba(90,162,255,.35),0 10px 24px rgba(90,162,255,.3)}
+#agentLearn .alAv.rawan{background:radial-gradient(circle at 30% 30%,#c4b5fd,#6d4fd8 70%);box-shadow:0 0 0 3px rgba(167,139,250,.35),0 10px 24px rgba(167,139,250,.3)}
+#agentLearn .alAv.nasser{background:radial-gradient(circle at 30% 30%,#7fe7d3,#1f8f7c 70%);box-shadow:0 0 0 3px rgba(62,208,184,.4),0 10px 24px rgba(62,208,184,.3)}
+#agentLearn .alAv.guest{background:radial-gradient(circle at 30% 30%,#d6dbe6,#6b7280 70%);box-shadow:0 0 0 3px rgba(255,255,255,.2)}
+#agentLearn .alAv.dashed{background:rgba(62,208,184,.10);border:2px dashed rgba(62,208,184,.8);box-shadow:0 0 20px rgba(62,208,184,.22)}
+#agentLearn .alName{font-size:12.5px;font-weight:700;letter-spacing:.2px;white-space:nowrap}
+#agentLearn .alRole{font-size:10.5px;color:#9fe9da}
+#agentLearn .alSeat.teacher .alRole{color:#c9d0de}
+#agentLearn .alSeat.empty .alRole{color:#8f98ad}
+#agentLearn .alArrow{align-self:center;margin-top:16px;opacity:.7;transform:scaleX(-1)}
 #agentLearn .alBody{display:flex;align-items:center;gap:12px}
-#agentLearn .alSeat{flex-shrink:0;width:52px;height:52px;border-radius:50%;border:2px dashed rgba(62,208,184,.8);background:rgba(62,208,184,.10);box-shadow:0 0 20px rgba(62,208,184,.22);display:flex;align-items:center;justify-content:center}
-#agentLearn .alTxt{display:flex;flex-direction:column;gap:3px;min-width:0}
+#agentLearn .alTxt{display:flex;flex-direction:column;gap:3px;min-width:0;text-align:center;width:100%}
 #agentLearn .alTxt b{font-size:13px;font-weight:600}
 #agentLearn .alTxt p{margin:0;font-size:11.5px;line-height:1.55;color:#c9d0de}
-#agentLearn .alBtn{height:40px;border-radius:12px;border:1px solid rgba(62,208,184,.4);background:rgba(62,208,184,.14);color:#f3f5f9;font-weight:600;font-size:13px;cursor:pointer;font-family:inherit}
+#agentLearn .alBtn{height:42px;border-radius:14px;border:1px solid rgba(62,208,184,.4);background:linear-gradient(90deg,rgba(62,208,184,.22),rgba(90,162,255,.18));color:#f3f5f9;font-weight:600;font-size:13px;cursor:pointer;font-family:inherit}
+
+/* v12: البيئة التعليمية داخل الغرفة المفتوحة (نفس الشكل، لون تركوازي) */
+#agentSheet.classroom .asGlow1{background:radial-gradient(circle,rgba(62,208,184,.30),rgba(62,208,184,0) 70%)}
+#agentSheet.classroom .asGlow2{background:radial-gradient(circle,rgba(90,162,255,.28),rgba(90,162,255,0) 70%)}
+#agentSheet .asAv.nasser{background:radial-gradient(circle at 30% 30%,#7fe7d3,#1f8f7c 70%);margin-right:-10px}
+#agentSheet .asAv.guest{background:radial-gradient(circle at 30% 30%,#d6dbe6,#6b7280 70%);margin-right:-10px}
+#agentSheet.classroom .asTab.on{background:linear-gradient(90deg,#7fe7d3,#9cc4ff)}
+#agentSheet .asMsg.nasser .mav{background:radial-gradient(circle at 30% 30%,#7fe7d3,#1f8f7c 70%)}
+#agentSheet .asMsg.guest .mav{background:radial-gradient(circle at 30% 30%,#d6dbe6,#6b7280 70%)}
+#agentSheet .asMsg.nasser .mn{color:#7fe7d3}
+#agentSheet .asMsg.guest .mn{color:#c9d0de}
+#agentSheet .asMsg.nasser .mt{background:rgba(62,208,184,.14);border:1px solid rgba(62,208,184,.3);border-radius:16px 16px 16px 4px}
+#agentSheet .asMsg.guest .mt{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);border-radius:16px 16px 16px 4px}
+#agentSheet .asPin[hidden],#agentSheet .asTab[hidden]{display:none!important}
+#agentSheet .asPick{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:0 0 2px}
+#agentSheet .asPick::-webkit-scrollbar{display:none}
+#agentSheet .asChip{flex-shrink:0;padding:6px 12px;border-radius:999px;font-size:11px;color:#c9d0de;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);cursor:pointer;font-family:inherit;white-space:nowrap}
+#agentSheet .asChip.on{color:#0b0d12;font-weight:600;background:linear-gradient(90deg,#7fe7d3,#9cc4ff);border-color:transparent}
+#agentSheet .asAgent{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border-radius:16px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.10)}
+#agentSheet .asAgent .aav{width:44px;height:44px;border-radius:50%;overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:"Readex Pro",sans-serif;font-weight:700;font-size:18px;color:#fff}
+#agentSheet .asAgent .aav img{width:100%;height:100%;object-fit:cover;display:block}
+#agentSheet .asAgent .aav.rizq{background:radial-gradient(circle at 30% 30%,#8dbcff,#2f6fd6 70%)}
+#agentSheet .asAgent .aav.rawan{background:radial-gradient(circle at 30% 30%,#c4b5fd,#6d4fd8 70%)}
+#agentSheet .asAgent .aav.nasser{background:radial-gradient(circle at 30% 30%,#7fe7d3,#1f8f7c 70%)}
+#agentSheet .asAgent .aav.guest{background:radial-gradient(circle at 30% 30%,#d6dbe6,#6b7280 70%)}
+#agentSheet .asAgent.nasser{border-color:rgba(62,208,184,.3);background:rgba(62,208,184,.07)}
+#agentSheet .asAgent .ab{display:flex;flex-direction:column;gap:4px;min-width:0;flex:1}
+#agentSheet .asAgent .an{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+#agentSheet .asAgent .an b{font-size:13.5px}
+#agentSheet .asAgent .tag{font-size:10px;padding:3px 8px;border-radius:999px;border:1px solid rgba(255,255,255,.14);color:#c9d0de;background:rgba(255,255,255,.06)}
+#agentSheet .asAgent .tag.learn{color:#0b0d12;background:linear-gradient(90deg,#7fe7d3,#3ed0b8);border-color:transparent;font-weight:600}
+#agentSheet .asAgent .tag.teach{color:#9cc4ff;border-color:rgba(90,162,255,.3);background:rgba(90,162,255,.1)}
+#agentSheet .asAgent p{margin:0;font-size:11.5px;line-height:1.6;color:#c9d0de}
+#agentSheet .asAgent .aw .k{color:#7fe7d3;font-weight:600}

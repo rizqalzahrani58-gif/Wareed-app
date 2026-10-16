@@ -13,12 +13,9 @@ body.appmode:not(.hubmode) .wrap>#homeHead3:not(#a):not(#b):not(#c):not(#d){disp
 #aiBar .aitag .trav.nav{width:1.5em;height:1.5em;font-size:.9em;border-width:1px}
 body.pnasser #aiForm #aiSend{background:#1f9e89}
 
-/* v13: د. ناصر ما يشوف غرفة الوكلاء ولا بيئة التعليم ولا مجلس الوكلاء ولا أي شي يخص روان */
-body[data-nasser] #agentDeck:not(#a):not(#b):not(#c):not(#d):not(#e),
+/* v2: د. ناصر يشوف البيئة التعليمية (الشريط العلوي) ويدخلها، ولا يشوف غرفة الوكلاء ولا توصيات روان ولا قسم مجلس الوكلاء القديم */
 body[data-nasser] #agentRoom:not(#a):not(#b):not(#c):not(#d):not(#e),
-body[data-nasser] #agentLearn:not(#a):not(#b):not(#c):not(#d):not(#e),
-body[data-nasser] #agentSheet:not(#a):not(#b):not(#c):not(#d):not(#e),
 body[data-nasser] #councilSec:not(#a):not(#b):not(#c):not(#d):not(#e),
 body[data-nasser] #homeHead2:not(#a):not(#b):not(#c):not(#d):not(#e){display:none!important}
-/* بدل الغرفة: ترجع له بطاقة Rizq AI */
-body[data-nasser].appmode.hubmode .wrap>#homeHead.arHide:not(#a):not(#b):not(#c):not(#d):not(#e){display:flex!important}
+body[data-nasser].appmode.hubmode .wrap>#agentDeck:not(#a):not(#b):not(#c):not(#d):not(#e){display:block!important}
+body[data-nasser] #agentSheet:not(.classroom):not(#a):not(#b):not(#c):not(#d){display:none!important}
