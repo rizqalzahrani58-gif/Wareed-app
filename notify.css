@@ -1,0 +1,25 @@
+.avbtn{position:relative}
+.ntbadge{position:absolute;top:-4px;inset-inline-start:-4px;min-width:18px;height:18px;padding:0 4px;border-radius:9px;background:#ff5b5b;color:#fff;font:700 11px/18px system-ui,sans-serif;text-align:center;box-shadow:0 0 0 2px #0b0d12}
+.ntbox{margin:1.2em 0;padding:1em;background:#161a23;border:1px solid #272d3a;border-radius:18px;display:flex;flex-direction:column;gap:.7em}
+.ntbox h2{margin:0;font-size:1.15em}.ntbox h3{margin:.6em 0 0;font-size:.95em;color:#8f98ad}
+.ntpushrow{display:flex;align-items:center;gap:.7em;flex-wrap:wrap;font-size:.88em;color:#c9d0de;line-height:1.6}
+.ntpush,.ntsend{font:inherit;font-weight:600;background:#5aa2ff;color:#fff;border:0;border-radius:10px;padding:.55em 1.1em;cursor:pointer}
+.ntpush:disabled,.ntsend:disabled{opacity:.5}
+.ntlist{display:flex;flex-direction:column;gap:.5em}
+.ntcard{padding:.75em .85em;background:#1e2330;border:1px solid #272d3a;border-radius:14px}
+.ntcard.new{border-color:#5aa2ff;box-shadow:inset 3px 0 0 #5aa2ff;cursor:pointer}
+.nthead{display:flex;justify-content:space-between;gap:.6em;align-items:baseline}
+.ntmeta{font-size:.78em;color:#8f98ad;white-space:nowrap}
+.ntcard p{margin:.35em 0 0;white-space:pre-wrap;line-height:1.65;color:#dfe4ee}
+.ntfoot{display:flex;gap:.8em;align-items:center;margin-top:.45em;font-size:.8em;color:#8f98ad;flex-wrap:wrap}
+.ntread{margin-inline-start:auto}
+.ntdel{font:inherit;background:none;border:1px solid #3a2a2a;color:#ff8a8a;border-radius:8px;padding:.15em .6em;cursor:pointer}
+.ntcomp{display:flex;flex-direction:column;gap:.55em;padding-top:.2em}
+.ntcomp input,.ntcomp textarea{font:inherit;padding:.6em .75em;border:1px solid #272d3a;border-radius:10px;background:#1e2330;color:#f3f5f9;width:100%;box-sizing:border-box}
+.ntcomp textarea{min-height:5em;resize:vertical}
+.ntchips{display:flex;flex-wrap:wrap;gap:.4em}
+.ntchip{font:inherit;font-size:.85em;background:#1e2330;color:#c9d0de;border:1px solid #272d3a;border-radius:999px;padding:.35em .8em;cursor:pointer}
+.ntchip.on{background:#5aa2ff;border-color:#5aa2ff;color:#fff}
+.nttoast{position:fixed;z-index:2000;top:calc(env(safe-area-inset-top,0px) + 10px);left:12px;right:12px;max-width:26em;margin:auto;background:#1e2330;border:1px solid #5aa2ff;border-radius:14px;padding:.8em 1em;display:flex;flex-direction:column;gap:.25em;box-shadow:0 12px 40px rgba(0,0,0,.5);color:#f3f5f9;cursor:pointer;animation:ntin .25s ease-out}
+.nttoast span{font-size:.88em;color:#c9d0de}
+@keyframes ntin{from{transform:translateY(-20px);opacity:0}to{transform:none;opacity:1}}
