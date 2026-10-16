@@ -14,8 +14,8 @@ body.appmode:not(.hubmode) .wrap>#homeHead3:not(#a):not(#b):not(#c):not(#d){disp
 body.pnasser #aiForm #aiSend{background:#1f9e89}
 
 /* v2: د. ناصر يشوف البيئة التعليمية (الشريط العلوي) ويدخلها، ولا يشوف غرفة الوكلاء ولا توصيات روان ولا قسم مجلس الوكلاء القديم */
-body[data-nasser] #agentRoom:not(#a):not(#b):not(#c):not(#d):not(#e),
+body[data-nasser] #agentRoom:not(.mgr):not(#a):not(#b):not(#c):not(#d):not(#e),
 body[data-nasser] #councilSec:not(#a):not(#b):not(#c):not(#d):not(#e),
 body[data-nasser] #homeHead2:not(#a):not(#b):not(#c):not(#d):not(#e){display:none!important}
 body[data-nasser].appmode.hubmode .wrap>#agentDeck:not(#a):not(#b):not(#c):not(#d):not(#e){display:block!important}
-body[data-nasser] #agentSheet:not(.classroom):not(#a):not(#b):not(#c):not(#d){display:none!important}
+body[data-nasser] #agentSheet:not(.classroom):not(.mgrroom):not(#a):not(#b):not(#c):not(#d){display:none!important}

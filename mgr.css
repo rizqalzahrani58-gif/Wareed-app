@@ -1,0 +1,35 @@
+/* ---------- v13: بطاقة المدير اللي عنده وكيل ---------- */
+#agentRoom.mgr .arTools{display:flex;align-items:center;gap:8px}
+#agentRoom.mgr .arPaint{width:36px;height:36px;border-radius:50%;padding:0;cursor:pointer;
+  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);display:flex;align-items:center;justify-content:center}
+#agentRoom.mgr .arPaint.on{background:rgba(255,255,255,.2);border-color:rgba(255,255,255,.35)}
+#agentRoom.mgr .arPaint:focus-visible,#agentRoom.mgr .arPal .sw:focus-visible{outline:2px solid #fff;outline-offset:2px}
+#agentRoom.mgr .arPal{position:relative;z-index:2;margin:-4px 0 0;padding:10px 12px 12px;border-radius:18px;cursor:default;
+  background:rgba(12,15,24,.72);border:1px solid rgba(255,255,255,.14);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px)}
+#agentRoom.mgr .arPal b{display:block;font-size:12px;font-weight:600;color:#c9d0de;margin:0 0 8px}
+#agentRoom.mgr .arSw{display:flex;flex-wrap:wrap;gap:10px}
+#agentRoom.mgr .arPal .sw{position:relative;width:30px;height:30px;border-radius:50%;padding:0;cursor:pointer;
+  border:2px solid rgba(255,255,255,.18);box-shadow:inset 0 0 0 2px rgba(0,0,0,.15)}
+#agentRoom.mgr .arPal .sw.on{border-color:#fff;box-shadow:0 0 0 3px rgba(255,255,255,.25)}
+#agentRoom.mgr .arPal .sw.def{background:linear-gradient(135deg,#5aa2ff,#a78bfa)}
+#agentRoom.mgr .arPal .sw.custom{display:flex;overflow:hidden;
+  background:conic-gradient(#ef4444,#f5c451,#34d399,#3ed0b8,#5aa2ff,#a78bfa,#f472b6,#ef4444)}
+#agentRoom.mgr .arPal .sw.custom input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;border:0;padding:0}
+#agentRoom.mgr .arChat{display:flex;flex-direction:column;gap:7px;padding:2px 2px 0}
+#agentRoom.mgr .arBub{max-width:86%;padding:8px 12px;border-radius:16px;font-size:13px;line-height:1.55;
+  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);display:flex;flex-direction:column;gap:2px}
+#agentRoom.mgr .arBub b{font-family:"Readex Pro",sans-serif;font-size:11px;font-weight:600;color:#c9d0de}
+#agentRoom.mgr .arBub span{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+#agentRoom.mgr .arBub.mine{align-self:flex-start;border-start-start-radius:6px}
+#agentRoom.mgr .arBub.rizq{align-self:flex-end;border-start-end-radius:6px;background:rgba(90,162,255,.16);border-color:rgba(90,162,255,.28)}
+#agentRoom.mgr .arChatEmpty{text-align:center;font-size:13px;line-height:1.6;color:#c9d0de;padding:6px 8px}
+#agentRoom .arAv.nasser{background:radial-gradient(circle at 30% 30%,#8ff0df,#1f8f7c 70%);
+  box-shadow:0 0 0 3px rgba(62,208,184,.35),0 10px 24px rgba(62,208,184,.3)}
+#agentRoom .arAv.guest{background:radial-gradient(circle at 30% 30%,#d1d5db,#4b5563 70%);box-shadow:0 0 0 3px rgba(255,255,255,.2)}
+/* لون الزجاج اللي يختاره المدير */
+#agentRoom.mgr.tinted{background:linear-gradient(135deg,var(--gEdge) 0%,rgba(255,255,255,.1) 45%,var(--gEdge2) 100%);
+  box-shadow:0 24px 60px rgba(0,0,0,.55),0 0 40px var(--gGlow)}
+#agentRoom.mgr.tinted .arIn{background:linear-gradient(160deg,var(--gTop) 0%,var(--gMid) 40%,rgba(16,20,32,.72) 100%)}
+#agentRoom.mgr.tinted .arPill{background:var(--gPill);box-shadow:0 8px 20px var(--gGlow)}
+#agentRoom.mgr.tinted .arBub.rizq{background:var(--gPill);border-color:var(--gEdge2)}
+#agentSheet.mgrroom.tinted .asIn{background-image:linear-gradient(170deg,var(--gTop) 0%,var(--gMid) 35%,transparent 70%)}
