@@ -1,4 +1,4 @@
-/* غرفة الوكلاء — الشريط العلوي الزجاجي (v10) */
+/* غرفة الوكلاء — الشريط العلوي الزجاجي (v11) */
 #agentRoom{position:relative;margin:0 0 12px;border-radius:26px;padding:1px;cursor:pointer;-webkit-tap-highlight-color:transparent;
   background:linear-gradient(135deg,rgba(90,162,255,.55) 0%,rgba(255,255,255,.10) 45%,rgba(167,139,250,.55) 100%);
   box-shadow:0 24px 60px rgba(0,0,0,.55),0 0 40px rgba(90,162,255,.10);font-family:"IBM Plex Sans Arabic","Readex Pro",system-ui,sans-serif;color:#f3f5f9}
@@ -55,9 +55,9 @@
 #agentSheet .asIn{height:100%;box-sizing:border-box;border-radius:29px 29px 0 0;display:flex;flex-direction:column;overflow:hidden;
   background:linear-gradient(180deg,rgba(255,255,255,.09) 0%,rgba(14,18,30,.86) 30%,rgba(11,13,18,.96) 100%);
   -webkit-backdrop-filter:blur(26px) saturate(150%);backdrop-filter:blur(26px) saturate(150%)}
-#agentSheet .asGrip{display:flex;justify-content:center;padding-top:10px}
-#agentSheet .asGrip i{width:40px;height:5px;border-radius:3px;background:rgba(255,255,255,.25)}
-#agentSheet .asHead{display:flex;align-items:center;justify-content:space-between;padding:12px 16px 8px}
+#agentSheet .asGrip{display:flex;justify-content:center;padding:10px 0 8px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+#agentSheet .asGrip i{width:48px;height:5px;border-radius:3px;background:rgba(255,255,255,.4)}
+#agentSheet .asHead{display:flex;align-items:center;justify-content:space-between;padding:8px 16px 8px}
 #agentSheet .asWho{display:flex;align-items:center;gap:10px}
 #agentSheet .asAvs{display:flex}
 #agentSheet .asAv{width:36px;height:36px;border-radius:50%;overflow:hidden;box-shadow:0 0 0 2px #0b0d12;display:flex;align-items:center;justify-content:center;font-family:"Readex Pro",sans-serif;font-weight:700;font-size:14px;color:#fff}
@@ -67,7 +67,12 @@
 #agentSheet .asT{display:flex;flex-direction:column;gap:2px}
 #agentSheet .asT b{font-size:15px;font-weight:700}
 #agentSheet .asT span{font-size:11px;color:#8f98ad}
-#agentSheet .asClose{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;cursor:pointer;color:#f3f5f9}
+/* v11: زر الإغلاق — ظاهر دايماً ويتغلب على أي قاعدة عامة للأزرار */
+#agentSheet .asHead .asClose{flex-shrink:0;width:44px!important;height:44px!important;min-width:44px!important;padding:0!important;margin:0!important;border-radius:50%!important;
+  background:rgba(255,255,255,.16)!important;border:1px solid rgba(255,255,255,.28)!important;display:flex!important;align-items:center!important;justify-content:center!important;
+  cursor:pointer;color:#fff!important;opacity:1!important;visibility:visible!important;-webkit-tap-highlight-color:transparent;box-shadow:0 4px 14px rgba(0,0,0,.35)}
+#agentSheet .asHead .asClose .asX{display:block!important;color:#fff!important;font:600 19px/1 -apple-system,BlinkMacSystemFont,system-ui,sans-serif!important;opacity:1!important;visibility:visible!important}
+#agentSheet .asHead .asClose:active{background:rgba(255,255,255,.28)!important}
 #agentSheet .asTabs{display:flex;gap:6px;padding:4px 16px 12px;overflow-x:auto;scrollbar-width:none}
 #agentSheet .asTabs::-webkit-scrollbar{display:none}
 #agentSheet .asTab{flex-shrink:0;padding:7px 14px;border-radius:999px;font-size:12px;color:#c9d0de;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.10);cursor:pointer;font-family:inherit}
@@ -75,7 +80,7 @@
 #agentSheet .asWhen{display:flex;align-items:center;gap:10px;padding:0 16px 10px;font-size:11px;color:#8f98ad}
 #agentSheet .asWhen i{flex:1;height:1px;background:rgba(255,255,255,.10)}
 #agentSheet .asWhen span{white-space:nowrap}
-#agentSheet .asLog{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 14px 16px;display:flex;flex-direction:column;gap:12px}
+#agentSheet .asLog{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding:0 14px 16px;display:flex;flex-direction:column;gap:12px}
 #agentSheet .asMsg{display:flex;gap:8px;align-items:flex-start}
 #agentSheet .asMsg.rawan{flex-direction:row-reverse}
 #agentSheet .asMsg .mav{width:28px;height:28px;border-radius:50%;overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:"Readex Pro",sans-serif;font-weight:700;font-size:12px;color:#fff}
