@@ -1,6 +1,7 @@
-/* غرفة الوكلاء — الشريط العلوي الزجاجي (v10)
+/* غرفة الوكلاء — الشريط العلوي الزجاجي (v11)
    يشتغل فوق native.js: يستبدل بطاقتي Rizq AI وRawan AI بغرفة زجاجية وحدة لأبو راكان وروان،
-   ويعرض غرفة مقفلة لأي زميل ما عنده وكيل. البيانات من collection council. */
+   ويعرض غرفة مقفلة لأي زميل ما عنده وكيل. البيانات من collection council.
+   v11: زر إغلاق ظاهر (✕)، سحب الغرفة لتحت يقفلها، وضغطة على المقبض تقفلها. */
 (function(){
   'use strict';
   if (window.__agentRoomLoaded) return; window.__agentRoomLoaded = true;
@@ -8,7 +9,6 @@
   const $ = id => document.getElementById(id);
   const SVG = {
     chev: '<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f3f5f9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg>',
-    close: '<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f3f5f9" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>',
     bulb: '<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f3f5f9" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2z"/></svg>',
     lock: (s)=>'<svg aria-hidden="true" width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke="#f3f5f9" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>',
     room: '<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#c9d0de" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg>',
@@ -154,13 +154,17 @@
     const bg = el('div', 'asBg'); bg.addEventListener('click', closeSheet);
     const frame = el('div', 'asFrame');
     const inn = el('div', 'asIn');
-    inn.append(el('div', 'asGrip', '<i></i>'));
+    const grip = el('div', 'asGrip', '<i></i>'); grip.setAttribute('aria-hidden', 'true');
+    grip.addEventListener('click', closeSheet);
+    inn.append(grip);
     const head = el('div', 'asHead');
     const who = el('div', 'asWho');
     const avs = el('div', 'asAvs'); avs.append(avatar('asAv', 'rizq'), avatar('asAv', 'rawan'));
     const t = el('div', 'asT'); t.append(txt('b', '', 'غرفة الوكلاء'), txt('span', '', 'Rizq AI و Rawan AI · تشوفها أنت وروان بس'));
     who.append(avs, t);
-    const close = el('button', 'asClose', SVG.close); close.type = 'button'; close.setAttribute('aria-label', 'إغلاق الغرفة'); close.addEventListener('click', closeSheet);
+    const close = el('button', 'asClose'); close.type = 'button'; close.setAttribute('aria-label', 'إغلاق الغرفة');
+    close.append(txt('span', 'asX', '✕'));
+    close.addEventListener('click', e => { e.stopPropagation(); closeSheet(); });
     head.append(who, close);
     const tabs = el('div', 'asTabs');
     const TABS = [['night', 'الليلة'], ['zero', 'المرحلة صفر'], ['recs', 'التوصيات'], ['lessons', 'الدروس']];
@@ -185,10 +189,37 @@
     sh.append(bg, el('div', 'asGlow1'), el('div', 'asGlow2'), frame);
     document.body.append(sh);
     document.addEventListener('keydown', e => { if (e.key === 'Escape' && sh.classList.contains('open')) closeSheet(); });
-    S.sheet = { sh, tabEls, ws, log, pin, pinB, tabs };
+
+    /* v11: سحب الغرفة لتحت يقفلها (من الرأس أو التبويبات، أو من المحتوى لما يكون في أوله) */
+    let y0 = null, dy = 0, dragging = false;
+    const canDrag = tgt => {
+      if (!tgt || !tgt.closest) return true;
+      if (tgt.closest('.asFoot') || tgt.closest('.asClose')) return false;
+      if (tgt.closest('.asLog')) return log.scrollTop <= 0;
+      return true;
+    };
+    frame.addEventListener('touchstart', e => {
+      if (e.touches.length !== 1 || !canDrag(e.target)) { y0 = null; return; }
+      y0 = e.touches[0].clientY; dy = 0; dragging = false;
+    }, { passive: true });
+    frame.addEventListener('touchmove', e => {
+      if (y0 == null) return;
+      dy = e.touches[0].clientY - y0;
+      if (!dragging && dy > 8) { dragging = true; frame.style.transition = 'none'; }
+      if (dragging) { if (e.cancelable) e.preventDefault(); frame.style.transform = 'translateY(' + Math.max(0, dy - 8) + 'px)'; }
+    }, { passive: false });
+    const endDrag = () => {
+      if (y0 == null) return;
+      y0 = null; frame.style.transition = '';
+      if (dragging && dy > 110) closeSheet(); else frame.style.transform = '';
+      dragging = false;
+    };
+    frame.addEventListener('touchend', endDrag); frame.addEventListener('touchcancel', endDrag);
+
+    S.sheet = { sh, frame, tabEls, ws, log, pin, pinB, tabs };
   }
-  function openSheet() { if (!S.sheet) buildSheet(); paintSheet(); S.sheet.sh.classList.add('open'); document.body.classList.add('arsheet'); }
-  function closeSheet() { if (!S.sheet) return; S.sheet.sh.classList.remove('open'); document.body.classList.remove('arsheet'); }
+  function openSheet() { if (!S.sheet) buildSheet(); S.sheet.frame.style.transform = ''; paintSheet(); S.sheet.sh.classList.add('open'); document.body.classList.add('arsheet'); }
+  function closeSheet() { if (!S.sheet) return; S.sheet.sh.classList.remove('open'); document.body.classList.remove('arsheet'); S.sheet.frame.style.transform = ''; }
 
   function turnRow(t) {
     const r = isRawanTurn(t);
@@ -267,7 +298,7 @@
     return null;
   }
   (async () => {
-    try { console.log('[agentRoom] v10 loaded'); } catch (e) {}
+    try { console.log('[agentRoom] v11 loaded'); } catch (e) {}
     const wrap = await waitFor(() => { const h = $('homeHead') || deepFind('homeHead'); return h && h.parentNode ? h.parentNode : null; });
     if (!wrap) { try { console.warn('[agentRoom] homeHead not found'); } catch (e) {} return; }
     await waitFor(() => document.body.dataset.role || window.__isBoss || document.body.dataset.rawan, 8000);
