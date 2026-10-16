@@ -1,4 +1,4 @@
-/* غرفة الوكلاء — الشريط العلوي الزجاجي (v9)
+/* غرفة الوكلاء — الشريط العلوي الزجاجي (v10)
    يشتغل فوق native.js: يستبدل بطاقتي Rizq AI وRawan AI بغرفة زجاجية وحدة لأبو راكان وروان،
    ويعرض غرفة مقفلة لأي زميل ما عنده وكيل. البيانات من collection council. */
 (function(){
@@ -79,11 +79,35 @@
     card.append(inn);
     card.addEventListener('click', () => openSheet());
     card.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openSheet(); } });
-    S.card = { card, link, pb, ps };
+    /* بيئة تعليم الوكيل الجديد (الشريحة الثانية، أصغر) */
+    const learn = el('div'); learn.id = 'agentLearn'; learn.setAttribute('role', 'button'); learn.tabIndex = 0;
+    const lin = el('div', 'alIn');
+    const ltop = el('div', 'alTop');
+    const ltitle = el('div', 'alTitle', SVG.room); ltitle.append(txt('span', '', 'بيئة تعليم الوكيل الجديد'));
+    const lcount = txt('span', 'alTag', '');
+    ltop.append(ltitle, lcount);
+    const lbody = el('div', 'alBody');
+    const seat = el('div', 'alSeat', '<svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3ed0b8" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>');
+    const ltxt = el('div', 'alTxt');
+    ltxt.append(txt('b', '', 'ما فيه وكيل جديد بعد'), txt('p', '', 'يوم يُخلق وكيل، أبو راكان يعلّمه هنا، وRizq AI تعلّمه في الغرفة، ويستلم معلومات الوكلاء اللي سمح بنقلها.'));
+    lbody.append(seat, ltxt);
+    const lbtn = txt('button', 'alBtn', 'افتح بيئة التعليم'); lbtn.type = 'button';
+    const openLearn = () => { const tile = document.querySelector('#hub .arHideTile'); if (tile) { tile.click(); } else { S.tab = 'zero'; openSheet(); } };
+    lbtn.addEventListener('click', e => { e.stopPropagation(); openLearn(); });
+    learn.addEventListener('click', openLearn);
+    learn.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openLearn(); } });
+    lin.append(ltop, lbody, lbtn);
+    learn.append(lin);
+    const deck = el('div'); deck.id = 'agentDeck';
+    const track = el('div', 'adTrack'); track.append(card, learn);
+    const dots = el('div', 'adDots'); const d1 = el('i', 'on'), d2 = el('i'); dots.append(d1, d2);
+    track.addEventListener('scroll', () => { const second = Math.abs(track.scrollLeft) > track.clientWidth * 0.45; d1.classList.toggle('on', !second); d2.classList.toggle('on', second); }, { passive: true });
+    deck.append(track, dots);
+    S.card = { card, link, pb, ps, lcount };
     const h1 = $('homeHead'), h2 = $('homeHead2');
     if (h1) { h1.hidden = true; h1.classList.add('arHide'); } if (h2) { h2.hidden = true; h2.classList.add('arHide'); }
     const anchor = $('homeMeta') || $('hub');
-    if (anchor && anchor.parentNode === wrap) wrap.insertBefore(card, anchor); else wrap.prepend(card);
+    if (anchor && anchor.parentNode === wrap) wrap.insertBefore(deck, anchor); else wrap.prepend(deck);
     paintCard();
   }
   function paintCard() {
@@ -95,6 +119,7 @@
     const n = d && Array.isArray(d.recs) ? d.recs.length : 0;
     S.card.pb.textContent = AR(n);
     S.card.ps.textContent = n === 1 ? 'توصية' : (n === 2 ? 'توصيتان' : 'توصيات');
+    if (S.card.lcount) { const z = S.docs.filter(x => String(x.phase) === '0').length; S.card.lcount.textContent = z ? AR(z) + ' جلسات تعليم' : 'جاهزة'; }
   }
 
   /* ---------- الغرفة المقفلة (مدير بدون وكيل) ---------- */
@@ -242,7 +267,7 @@
     return null;
   }
   (async () => {
-    try { console.log('[agentRoom] v9 loaded'); } catch (e) {}
+    try { console.log('[agentRoom] v10 loaded'); } catch (e) {}
     const wrap = await waitFor(() => { const h = $('homeHead') || deepFind('homeHead'); return h && h.parentNode ? h.parentNode : null; });
     if (!wrap) { try { console.warn('[agentRoom] homeHead not found'); } catch (e) {} return; }
     await waitFor(() => document.body.dataset.role || window.__isBoss || document.body.dataset.rawan, 8000);
