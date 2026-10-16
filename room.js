@@ -1,4 +1,4 @@
-/* غرفة الوكلاء — الشريط العلوي الزجاجي (v7)
+/* غرفة الوكلاء — الشريط العلوي الزجاجي (v8)
    يشتغل فوق native.js: يستبدل بطاقتي Rizq AI وRawan AI بغرفة زجاجية وحدة لأبو راكان وروان،
    ويعرض غرفة مقفلة لأي زميل ما عنده وكيل. البيانات من collection council. */
 (function(){
@@ -50,7 +50,7 @@
   /* ---------- state ---------- */
   const S = { docs: [], tab: 'night', sheet: null, card: null };
   const sorted = () => S.docs.slice().sort((a, b) => String(b.createdAt || b.date || b.id).localeCompare(String(a.createdAt || a.date || a.id)));
-  const latestNight = () => sorted().find(d => String(d.phase) === '1') || null;
+  const latestNight = () => sorted().find(d => String(d.phase) === '1' && Array.isArray(d.recs) && d.recs.length) || sorted().find(d => String(d.phase) === '1') || sorted().find(d => Array.isArray(d.recs) && d.recs.length) || null;
   const latestZero = () => sorted().find(d => String(d.phase) === '0' && /^phase0/.test(String(d.id))) || sorted().find(d => String(d.phase) === '0') || null;
   const latestAny = () => latestNight() || sorted()[0] || null;
 
@@ -231,7 +231,6 @@
 
   /* ---------- تشغيل ---------- */
   function waitFor(fn, ms) { return new Promise(res => { const t0 = Date.now(); (function p() { let v = null; try { v = fn(); } catch (e) {} if (v) return res(v); if (Date.now() - t0 > (ms || 600000)) return res(null); setTimeout(p, 200); })(); }); }
-  function toast(msg) { try { const t = el('div', '', ''); t.textContent = msg; t.setAttribute('style', 'position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 90px);transform:translateX(-50%);z-index:950;padding:8px 14px;border-radius:999px;font:12px "IBM Plex Sans Arabic",system-ui,sans-serif;color:#f3f5f9;background:rgba(20,24,36,.92);border:1px solid rgba(255,255,255,.14);box-shadow:0 8px 24px rgba(0,0,0,.4);white-space:nowrap'); document.body.append(t); setTimeout(() => t.remove(), 4000); } catch (e) {} }
 
   function deepFind(id, root) {
     root = root || document;
@@ -241,7 +240,7 @@
     return null;
   }
   (async () => {
-    try { console.log('[agentRoom] v7 loaded'); } catch (e) {}
+    try { console.log('[agentRoom] v8 loaded'); } catch (e) {}
     const wrap = await waitFor(() => { const h = $('homeHead') || deepFind('homeHead'); return h && h.parentNode ? h.parentNode : null; });
     if (!wrap) { try { console.warn('[agentRoom] homeHead not found'); } catch (e) {} return; }
     await waitFor(() => document.body.dataset.role || window.__isBoss || document.body.dataset.rawan, 8000);
@@ -249,12 +248,13 @@
     buildCard(wrap);
     waitFor(() => $('councilSec'), 30000).then(s => { if (s) adaptCouncil(); });
     try {
+      const merge = list => { const m = {}; S.docs.forEach(d => { m[d.id] = d; }); list.forEach(d => { m[d.id] = d; }); S.docs = Object.keys(m).map(k => m[k]); paintCard(); if (S.sheet && S.sheet.sh.classList.contains('open')) paintSheet(); };
+      if (window.sb && window.sb.from) {
+        try { const { data } = await window.sb.from('docs').select('id,data').eq('collection', 'council'); if (Array.isArray(data)) merge(data.map(r => Object.assign({}, r.data || {}, { id: r.id }))); } catch (e) {}
+      }
       const db = window.claude && window.claude.use ? await window.claude.use('db') : null;
       if (db) {
-        db.collection('council').onSnapshot(sn => { S.docs = (sn.docs || []).map(x => Object.assign({}, x.data(), { id: x.id })); paintCard(); if (S.sheet && S.sheet.sh.classList.contains('open')) paintSheet(); }, () => {});
-      } else if (window.sb) {
-        const { data } = await window.sb.from('docs').select('id,data').eq('collection', 'council');
-        S.docs = (data || []).map(r => Object.assign({}, r.data, { id: r.id })); paintCard();
+        db.collection('council').onSnapshot(sn => { try { merge((sn.docs || []).map(x => Object.assign({}, (typeof x.data === 'function' ? x.data() : x.data) || {}, { id: x.id }))); } catch (e) {} }, () => {});
       }
     } catch (e) {}
   })();
