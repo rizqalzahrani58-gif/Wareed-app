@@ -1,4 +1,4 @@
-/* غرفة الوكلاء — الشريط العلوي الزجاجي (v1)
+/* غرفة الوكلاء — الشريط العلوي الزجاجي (v2)
    يشتغل فوق native.js: يستبدل بطاقتي Rizq AI وRawan AI بغرفة زجاجية وحدة لأبو راكان وروان،
    ويعرض غرفة مقفلة لأي زميل ما عنده وكيل. البيانات من collection council. */
 (function(){
@@ -230,11 +230,14 @@
   }
 
   /* ---------- تشغيل ---------- */
-  function waitFor(fn, ms) { return new Promise(res => { const t0 = Date.now(); (function p() { let v = null; try { v = fn(); } catch (e) {} if (v) return res(v); if (Date.now() - t0 > (ms || 20000)) return res(null); setTimeout(p, 150); })(); }); }
+  function waitFor(fn, ms) { return new Promise(res => { const t0 = Date.now(); (function p() { let v = null; try { v = fn(); } catch (e) {} if (v) return res(v); if (Date.now() - t0 > (ms || 600000)) return res(null); setTimeout(p, 200); })(); }); }
+  function toast(msg) { try { const t = el('div', '', ''); t.textContent = msg; t.setAttribute('style', 'position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 90px);transform:translateX(-50%);z-index:950;padding:8px 14px;border-radius:999px;font:12px "IBM Plex Sans Arabic",system-ui,sans-serif;color:#f3f5f9;background:rgba(20,24,36,.92);border:1px solid rgba(255,255,255,.14);box-shadow:0 8px 24px rgba(0,0,0,.4);white-space:nowrap'); document.body.append(t); setTimeout(() => t.remove(), 4000); } catch (e) {} }
 
   (async () => {
-    const wrap = await waitFor(() => { const h = $('homeHead'); return h && h.parentNode && h.parentNode.classList && h.parentNode.classList.contains('wrap') ? h.parentNode : (h ? h.parentNode : null); });
-    if (!wrap) return;
+    try { console.log('[agentRoom] v2 loaded'); } catch (e) {}
+    const wrap = await waitFor(() => { const h = $('homeHead'); return h && h.parentNode ? h.parentNode : null; });
+    if (!wrap) { toast('غرفة الوكلاء: ما لقيت بطاقات الوكلاء'); return; }
+    await waitFor(() => document.body.dataset.role || window.__isBoss || document.body.dataset.rawan, 8000);
     if (!privileged()) { buildLocked(wrap); return; }
     buildCard(wrap);
     waitFor(() => $('councilSec'), 30000).then(s => { if (s) adaptCouncil(); });
