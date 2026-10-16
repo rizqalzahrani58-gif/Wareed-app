@@ -1,7 +1,9 @@
 /* إشعارات المدراء — يرسلها أبو راكان وروان ود. ناصر، وتظهر في «ملفي» + تنبيه على الجوال */
 (function(){
   const FN = 'https://zymsuvxoylpxowkhycuv.supabase.co/functions/v1/notify';
-  let sb, me, notices = [], reads = new Set(), people = [], readsAll = [];
+  let sb, me, notices = [], reads = new Set(), people = [], readsAll = [], replies = [];
+  const SEENK = 'ntSeenReplies'; let seenAt = (() => { try { return localStorage.getItem(SEENK) || ''; } catch(e){ return ''; } })();
+  const nameOf = id => (people.find(p => p.id === id) || {}).name || '؟';
   const $e = (t, a, ...k) => { const n = document.createElement(t); for(const x in (a||{})){ if(x === 'class') n.className = a[x]; else if(x.startsWith('on')) n[x] = a[x]; else if(a[x] != null) n.setAttribute(x, a[x]); } k.flat().forEach(c => c != null && n.append(c)); return n; };
   const canSend = () => me && (me.role === 'owner' || me.role === 'trusted');
   const canDel = n => me && ((me.role === 'owner' && !me.legacy_id) || n.sender_id === me.id);
@@ -29,18 +31,58 @@
 
   /* ---------- بيانات ---------- */
   async function load(){
-    const [{ data: n }, { data: r }] = await Promise.all([
+    const [{ data: n }, { data: r }, { data: rp }] = await Promise.all([
       sb.from('notices').select('*').order('created_at', { ascending: false }).limit(200),
-      sb.from('notice_reads').select('notice_id,user_id,read_at')
+      sb.from('notice_reads').select('notice_id,user_id,read_at'),
+      sb.from('notice_replies').select('*').order('created_at', { ascending: true }).limit(2000)
     ]);
-    notices = n || []; readsAll = r || []; reads = new Set(readsAll.filter(x => x.user_id === me.id).map(x => x.notice_id));
+    notices = n || []; readsAll = r || []; replies = rp || []; reads = new Set(readsAll.filter(x => x.user_id === me.id).map(x => x.notice_id));
     paint();
   }
   async function markRead(id){ if(reads.has(id)) return; reads.add(id); paint(); await sb.from('notice_reads').insert({ notice_id: id, user_id: me.id }); }
 
+  async function addReply(n, kind, body, to){
+    const row = { notice_id: n.id, user_id: me.id, user_name: me.name, kind, body: body || '', to_user: to || null };
+    const { data, error } = await sb.from('notice_replies').insert(row).select().single();
+    if(error){ if(!/duplicate|unique/i.test(error.message)) alert('ما انرسل: ' + error.message); return false; }
+    replies.push(data); if(!reads.has(n.id)) markRead(n.id); else paint();
+    call({ action: 'reply', reply_id: data.id }).catch(() => {});
+    return true;
+  }
+  /* تحويل الإشعار لمهمة في لوحة المهام */
+  async function toTask(n, btn){
+    const title = prompt('عنوان المهمة:', n.title); if(title == null || !title.trim()) return;
+    btn.disabled = true;
+    let order = 1000; try { const { data } = await sb.from('docs').select('data').eq('collection', 'tasks').limit(2000); order = Math.max(0, ...(data || []).map(d => +(d.data && d.data.order) || 0)) + 1; } catch(e){}
+    const id = 'nt' + Date.now().toString(36);
+    const note = 'من إشعار ' + (n.sender_name || '') + (n.body ? ': ' + n.body : '') + ' · المسؤول: ' + me.name;
+    const data = { kind: 'task', title: title.trim().slice(0, 200), note: note.slice(0, 1500), status: 'open', order, via: 'إشعار', fromNotice: n.id, createdAt: new Date().toISOString(), addedById: me.legacy_id || me.id, addedName: me.name, addedPos: me.pos || '' };
+    const { error } = await sb.from('docs').insert({ collection: 'tasks', id, data });
+    if(error){ alert('ما قدرت أسويها مهمة: ' + error.message); btn.disabled = false; return; }
+    await addReply(n, 'task', data.title);
+  }
+  /* ردود جديدة موجّهة لي (رد على إشعار أرسلته، أو رد المرسل علي) */
+  const incoming = r => r.user_id !== me.id && (r.to_user === me.id || (!r.to_user && (notices.find(n => n.id === r.notice_id) || {}).sender_id === me.id));
+  const newReplies = () => replies.filter(r => incoming(r) && r.created_at > seenAt);
+  function markSeen(){ const last = replies.filter(incoming).map(r => r.created_at).sort().pop(); if(last && last > seenAt){ seenAt = last; try { localStorage.setItem(SEENK, last); } catch(e){} paintBadge(); } }
+  function replyBox(onSend, ph){
+    const ta = $e('textarea', { maxlength: '2000', placeholder: ph || 'اكتب ردك…', rows: '2' });
+    const b = $e('button', { type: 'button', class: 'ntsend' }, 'أرسل الرد');
+    const w = $e('div', { class: 'ntreplyform' }, ta, b);
+    b.onclick = async e => { e.stopPropagation(); const v = ta.value.trim(); if(!v) return; b.disabled = true; if(await onSend(v)){ ta.value = ''; w.remove(); } b.disabled = false; };
+    ta.onclick = e => e.stopPropagation();
+    setTimeout(() => ta.focus(), 50); return w;
+  }
+  function bubble(r){
+    const mineR = r.user_id === me.id, isNew = incoming(r) && r.created_at > seenAt;
+    if(r.kind === 'task') return $e('div', { class: 'ntrp ack' + (isNew ? ' fresh' : '') }, '📋 ' + (mineR ? 'حوّلته مهمة' : (r.user_name || nameOf(r.user_id)) + ' حوّله مهمة') + ': ' + r.body, $e('span', { class: 'ntmeta' }, ' · ' + ago(r.created_at)));
+    if(r.kind === 'ack') return $e('div', { class: 'ntrp ack' + (isNew ? ' fresh' : '') }, '✅ ' + (mineR ? 'أكدت الاستلام' : (r.user_name || nameOf(r.user_id)) + ' أكد الاستلام'), $e('span', { class: 'ntmeta' }, ' · ' + ago(r.created_at)));
+    return $e('div', { class: 'ntrp' + (mineR ? ' me' : '') + (isNew ? ' fresh' : '') }, $e('b', {}, mineR ? 'أنت' : (r.user_name || nameOf(r.user_id))), r.to_user && !mineR ? null : (r.to_user ? $e('span', { class: 'ntmeta' }, ' ← ' + nameOf(r.to_user)) : null), $e('span', { class: 'ntmeta' }, ' · ' + ago(r.created_at)), $e('p', {}, r.body));
+  }
+
   /* ---------- الواجهة ---------- */
   let box, inbox, sentBox, pushRow, badge;
-  function unread(){ return notices.filter(n => forMe(n) && !reads.has(n.id)).length; }
+  function unread(){ return notices.filter(n => forMe(n) && !reads.has(n.id)).length + newReplies().length; }
   function paintBadge(){
     const av = document.querySelector('.avbtn'); if(!av) return;
     if(!badge || !badge.isConnected){ badge = $e('span', { class: 'ntbadge' }); av.append(badge); }
@@ -60,12 +102,41 @@
       const names = rd.map(x => (people.find(p => p.id === x.user_id) || {}).name).filter(Boolean);
       foot.append($e('span', { class: 'ntread', title: names.join('، ') }, '👁 ' + rd.length + ' من ' + total));
     }
+    const th = $e('div', { class: 'ntthread' });
+    if(mine){
+      const rs = replies.filter(r => r.notice_id === n.id);
+      const acks = rs.filter(r => r.kind === 'ack' && r.user_id !== n.sender_id);
+      const total = n.target_all ? people.filter(p => p.role === 'manager').length : n.targets.length;
+      foot.append($e('span', { class: 'ntack', title: acks.map(r => r.user_name || nameOf(r.user_id)).join('، ') }, '✅ ' + acks.length + ' من ' + total));
+      if(acks.length) th.append($e('div', { class: 'ntacks' }, 'أكد الاستلام: ' + acks.map(r => r.user_name || nameOf(r.user_id)).join('، ')));
+      rs.filter(r => r.kind === 'task' && r.user_id !== me.id).forEach(r => th.append(bubble(r)));
+      /* الردود مجمّعة حسب الزميل، وتقدر ترد على كل واحد */
+      const by = new Map(); rs.filter(r => r.kind === 'reply').forEach(r => { const k = r.user_id === me.id ? r.to_user : r.user_id; if(!k) return; if(!by.has(k)) by.set(k, []); by.get(k).push(r); });
+      by.forEach((list, uid) => {
+        const g = $e('div', { class: 'ntgroup' }, ...list.map(bubble));
+        const rb = $e('button', { type: 'button', class: 'ntlink' }, '↩ رد على ' + nameOf(uid));
+        rb.onclick = e => { e.stopPropagation(); if(g.querySelector('.ntreplyform')) return; g.append(replyBox(v => addReply(n, 'reply', v, uid), 'ردك على ' + nameOf(uid) + '…')); };
+        g.append(rb); th.append(g);
+      });
+    } else {
+      const rs = replies.filter(r => r.notice_id === n.id && (r.user_id === me.id || r.to_user === me.id));
+      rs.forEach(r => th.append(bubble(r)));
+      const acked = rs.some(r => r.kind === 'ack' && r.user_id === me.id);
+      const act = $e('div', { class: 'ntactions' });
+      if(!acked){ const ab = $e('button', { type: 'button', class: 'ntackbtn' }, '✅ تم الاستلام'); ab.onclick = async e => { e.stopPropagation(); ab.disabled = true; await addReply(n, 'ack'); }; act.append(ab); }
+      if(!rs.some(r => r.kind === 'task' && r.user_id === me.id)){ const tb = $e('button', { type: 'button', class: 'ntlink' }, '📋 حوّلها مهمة'); tb.onclick = e => { e.stopPropagation(); toTask(n, tb); }; act.append(tb); }
+      const rb = $e('button', { type: 'button', class: 'ntlink' }, '↩ رد');
+      rb.onclick = e => { e.stopPropagation(); if(th.querySelector('.ntreplyform')) return; th.append(replyBox(v => addReply(n, 'reply', v))); };
+      act.append(rb); c.append(act);
+    }
+    if(th.childNodes.length) c.insertBefore(th, c.querySelector('.ntactions'));
     if(canSend() && canDel(n)) foot.append($e('button', { type: 'button', class: 'ntdel', onclick: async e => { e.stopPropagation(); if(!confirm('تحذف هالإشعار؟')) return; await sb.from('notices').delete().eq('id', n.id); load(); } }, 'حذف'));
     if(isNew) c.onclick = () => markRead(n.id);
     return c;
   }
   function paint(){
     if(!inbox) return;
+    if([...box.querySelectorAll('.ntreplyform textarea')].some(t => t.value.trim())){ paintBadge(); return; }
     const mineIn = notices.filter(forMe);
     inbox.replaceChildren(...(mineIn.length ? mineIn.map(n => card(n, false)) : [$e('p', { class: 'hint' }, 'ما عندك إشعارات.')]));
     if(sentBox){ const sent = notices.filter(n => !forMe(n)); sentBox.replaceChildren(...(sent.length ? sent.slice(0, 40).map(n => card(n, true)) : [$e('p', { class: 'hint' }, 'ما أُرسل شي للحين.')])); }
@@ -109,6 +180,7 @@
     else box.append(inbox);
     const prof = sec.querySelector('.prof'); sec.insertBefore(box, prof ? prof.nextSibling : null);
     paintPush(); paint();
+    try { new IntersectionObserver(es => { if(es.some(x => x.isIntersecting)) setTimeout(markSeen, 2500); }).observe(box); } catch(e){}
   }
 
   async function start(){
@@ -123,13 +195,16 @@
     sb.channel('notices-rt').on('postgres_changes', { event: '*', schema: 'public', table: 'notices' }, async pl => {
       await load();
       const n = pl.new; if(pl.eventType === 'INSERT' && n && forMe(n)) toast(n);
+    }).on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'notice_replies' }, async pl => {
+      const r = pl.new; await load();
+      if(r && incoming(r)){ const n = notices.find(x => x.id === r.notice_id) || {}; toast({ id: n.id, title: ({ ack: '✅ ', task: '📋 ', reply: '↩️ ' })[r.kind] + (r.user_name || '') + ({ ack: ' استلم', task: ' حوّله مهمة', reply: ' رد' })[r.kind], sender_name: '', body: (n.title || '') + (r.body ? ': ' + r.body : '') }, true); }
     }).subscribe();
     const q = new URLSearchParams(location.search).get('n');
     if(q){ const go = () => { if(window.__hub && document.getElementById('nt-' + q)){ window.__hub.openSec('profSec'); document.getElementById('nt-' + q).scrollIntoView({ block: 'center' }); markRead(q); history.replaceState(null, '', location.pathname); } else setTimeout(go, 600); }; go(); }
     setInterval(load, 120000);
   }
-  function toast(n){
-    const t = $e('div', { class: 'nttoast', onclick: () => { t.remove(); window.__hub && window.__hub.openSec('profSec'); markRead(n.id); } }, $e('b', {}, '🔔 ' + n.title), $e('span', {}, (n.sender_name ? n.sender_name + ': ' : '') + (n.body || '').slice(0, 120)));
+  function toast(n, raw){
+    const t = $e('div', { class: 'nttoast', onclick: () => { t.remove(); window.__hub && window.__hub.openSec('profSec'); const el = n.id && document.getElementById('nt-' + n.id); if(el) el.scrollIntoView({ block: 'center' }); if(!raw) markRead(n.id); } }, $e('b', {}, (raw ? '' : '🔔 ') + n.title), $e('span', {}, (n.sender_name ? n.sender_name + ': ' : '') + (n.body || '').slice(0, 120)));
     document.body.append(t); setTimeout(() => t.remove(), 9000);
   }
   if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => setTimeout(start, 800)); else setTimeout(start, 800);

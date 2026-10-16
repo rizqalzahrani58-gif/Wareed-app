@@ -23,3 +23,19 @@
 .nttoast{position:fixed;z-index:2000;top:calc(env(safe-area-inset-top,0px) + 10px);left:12px;right:12px;max-width:26em;margin:auto;background:#1e2330;border:1px solid #5aa2ff;border-radius:14px;padding:.8em 1em;display:flex;flex-direction:column;gap:.25em;box-shadow:0 12px 40px rgba(0,0,0,.5);color:#f3f5f9;cursor:pointer;animation:ntin .25s ease-out}
 .nttoast span{font-size:.88em;color:#c9d0de}
 @keyframes ntin{from{transform:translateY(-20px);opacity:0}to{transform:none;opacity:1}}
+.ntthread{display:flex;flex-direction:column;gap:.4em;margin-top:.55em}
+.ntrp{background:#161a23;border:1px solid #272d3a;border-radius:12px;padding:.45em .7em;font-size:.88em}
+.ntrp.me{background:#1a2740;border-color:#2c4a7a}
+.ntrp.ack{border-style:dashed;color:#9fe0b0}
+.ntrp.fresh{border-color:#5aa2ff;box-shadow:0 0 0 1px #5aa2ff}
+.ntrp p{margin:.2em 0 0;font-size:1em}
+.ntacks{font-size:.82em;color:#9fe0b0}
+.ntgroup{display:flex;flex-direction:column;gap:.35em;padding:.4em;border-radius:12px;background:rgba(255,255,255,.02)}
+.ntactions{display:flex;gap:.5em;flex-wrap:wrap;margin-top:.55em}
+.ntackbtn{font:inherit;font-size:.85em;font-weight:600;background:#1f3a2a;color:#9fe0b0;border:1px solid #2f5a40;border-radius:10px;padding:.4em .9em;cursor:pointer}
+.ntackbtn:disabled{opacity:.5}
+.ntlink{font:inherit;font-size:.85em;background:none;border:1px solid #272d3a;color:#c9d0de;border-radius:10px;padding:.4em .9em;cursor:pointer;align-self:flex-start}
+.ntack{color:#9fe0b0}
+.ntreplyform{display:flex;flex-direction:column;gap:.4em}
+.ntreplyform textarea{font:inherit;padding:.55em .7em;border:1px solid #272d3a;border-radius:10px;background:#1e2330;color:#f3f5f9;width:100%;box-sizing:border-box;resize:vertical}
+.ntreplyform .ntsend{align-self:flex-start}
