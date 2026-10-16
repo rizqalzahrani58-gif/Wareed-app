@@ -11,13 +11,13 @@
 #wdLogin button{font:inherit;font-weight:600;background:#1f6fb5;color:#fff;border:0;border-radius:10px;padding:.75em 1.2em;cursor:pointer}#wdLogin button:disabled{opacity:.5}
 #wdLogin .wdghost{background:transparent;color:#1b3250;border:1px solid #c6dbee;font-weight:500}
 #wdLogin .wdmsg{margin:0;min-height:1.2em;color:#c4521c;font-size:.9em}#wdLogin .wdhint{margin:0;font-size:.9em;line-height:1.6}#wdLogin .wdfoot{margin:0;font-size:.78em;color:#5e7390;text-align:center}
-#wdSignOut{position:fixed;left:1em;top:.6em;z-index:35;font-size:.75em;padding:.3em .7em;border-radius:999px;border:1px solid #c6dbee;background:#fff;color:#5e7390;cursor:pointer;font-family:inherit}
+#wdSignOut{position:fixed;left:1em;bottom:.8em;z-index:35;font-size:.7em;opacity:.7;padding:.3em .7em;border-radius:999px;border:1px solid #c6dbee;background:#fff;color:#5e7390;cursor:pointer;font-family:inherit}
 </style>
 <script src="https://zymsuvxoylpxowkhycuv.supabase.co/storage/v1/object/public/site/supabase.js"></script>
 <script>window.WAREED_CFG={url:"https://zymsuvxoylpxowkhycuv.supabase.co",key:"sb_publishable_KaEQNYshxSOWOs91VX54mg_-k6vdiDU"};</script>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@400;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap"><link rel="stylesheet" href="https://zymsuvxoylpxowkhycuv.supabase.co/storage/v1/object/public/site/app.css?v=1"><script src="https://zymsuvxoylpxowkhycuv.supabase.co/storage/v1/object/public/site/shim.js?v=4"></script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@400;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap"><link rel="stylesheet" href="https://zymsuvxoylpxowkhycuv.supabase.co/storage/v1/object/public/site/app.css?v=1"><script src="https://zymsuvxoylpxowkhycuv.supabase.co/storage/v1/object/public/site/shim.js?v=5"></script>
 <script>if("serviceWorker" in navigator){window.addEventListener("load",()=>{navigator.serviceWorker.register("sw.js").catch(()=>{});});}
-document.addEventListener("DOMContentLoaded",()=>{const b=document.createElement("button");b.id="wdSignOut";b.type="button";b.textContent="خروج";b.onclick=()=>{if(confirm("تسجّل خروج؟"))window.wareedSignOut();};document.body.append(b);});</script>
+document.addEventListener("DOMContentLoaded",()=>{const b=document.createElement("button");b.id="wdSignOut";b.type="button";b.textContent="خروج";b.onclick=()=>{if(confirm("متأكد تسجّل خروج؟ بعدها بتحتاج رمز جديد من الإيميل عشان تدخل. لو تبي بس تسكّر التطبيق، اضغط إلغاء."))window.wareedSignOut();};document.body.append(b);});</script>
 </head><body>
 <div id="appRoot" dir="rtl"></div>
 <script>
