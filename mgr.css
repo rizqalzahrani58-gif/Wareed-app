@@ -33,3 +33,6 @@
 #agentRoom.mgr.tinted .arPill{background:var(--gPill);box-shadow:0 8px 20px var(--gGlow)}
 #agentRoom.mgr.tinted .arBub.rizq{background:var(--gPill);border-color:var(--gEdge2)}
 #agentSheet.mgrroom.tinted .asIn{background-image:linear-gradient(170deg,var(--gTop) 0%,var(--gMid) 35%,transparent 70%)}
+
+/* ١٧ أكتوبر: أبو راكان ألغى الأسئلة المقترحة في كل الوكلاء — شات مباشر */
+#aiQuick{display:none!important}
