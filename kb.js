@@ -1,4 +1,5 @@
-/* وريد · لوحة المفاتيح (١٧ أكتوبر — النسخة ٤): شات كل الوكلاء (Rizq AI / Rawan AI) شاشة شات حقيقية:
+/* وريد · لوحة المفاتيح (١٧ أكتوبر — النسخة ٥: الكيبورد يطلع بالجوال من أول لمسة)
+   النسخة ٤: شات كل الوكلاء (Rizq AI / Rawan AI) شاشة شات حقيقية:
    - الشريط داخل نافذة المحادثة، آخر شي تحت
    - الكيبورد مسكّر: النافذة ملء الشاشة (ما نعتمد على أرقام الآيفون اللي تعلق بعد ما يتسكّر الكيبورد وتخلي فراغ تحت)
    - الكيبورد مفتوح: النافذة تنتهي عند الكيبورد بالضبط، ولو الآيفون ما بلّغ عن الكيبورد نقدّر ارتفاعه
@@ -40,7 +41,7 @@
 
   function typing(){
     const a = document.activeElement;
-    return !!(a && /^(INPUT|TEXTAREA)$/.test(a.tagName) && a.closest && a.closest('#aiSheet,#rkbSheet'));
+    return !!(a && /^(INPUT|TEXTAREA)$/.test(a.tagName) && a.closest && a.closest('#aiSheet,#rkbSheet') && (!touch || a.__wdTapped || (vv && vv.height < Math.max(R.clientHeight, window.innerHeight) * 0.85)));
   }
 
   let wasUp = false;
@@ -70,6 +71,33 @@
   document.addEventListener('focusin', () => { upd(); setTimeout(upd, 60); setTimeout(upd, 350); setTimeout(upd, 700); });
   document.addEventListener('focusout', () => { setTimeout(upd, 30); setTimeout(upd, 400); });
 
+
+  /* النسخة ٥: بالجوال الآيفون يرفض يفتح الكيبورد لو الخانة انمسكت برمجياً (مو بلمسة) — تصير الخانة "ماسكة" بدون كيبورد،
+     والنافذة تنكمش على كيبورد ما ظهر، واللمسة عليها بعدين ما تفتحه. الحل: ما نمسك الخانة تلقائياً بالجوال،
+     ولو انمسكت بدون كيبورد نفكّها، ولمسة الخانة نفسها تعيد المسك داخل اللمسة فيطلع الكيبورد. */
+  const touch = !!(window.matchMedia && matchMedia('(pointer:coarse)').matches) || ('ontouchstart' in window && navigator.maxTouchPoints > 0);
+  const CHAT = '#aiSheet,#agentSheet,#rkbSheet,.nt-reply';
+  const isField = el => !!(el && el.matches && el.matches('input:not([type=button]):not([type=submit]):not([type=file]):not([type=checkbox]):not([type=radio]),textarea') && el.closest(CHAT));
+  const kbShown = () => { if(!vv) return true; const full = Math.max(R.clientHeight, window.innerHeight); return vv.height < full * 0.85; };
+  function dropGhost(){ const a = document.activeElement; if(isField(a) && !kbShown() && !a.__wdTapped){ try { a.blur(); } catch(e){} upd(); } }
+  if(touch){
+    /* أي مسك برمجي بدون لمسة: نفكّه لو الكيبورد ما طلع */
+    document.addEventListener('focusin', e => { if(!isField(e.target)) return; const t = e.target; if(t.__wdTapAt && Date.now() - t.__wdTapAt < 900) { t.__wdTapped = true; return; } t.__wdTapped = false; setTimeout(dropGhost, 650); }, true);
+    document.addEventListener('focusout', e => { if(e.target) e.target.__wdTapped = false; }, true);
+    /* اللمسة على الخانة: نمسكها داخل اللمسة نفسها (هذا اللي يخلي الآيفون يطلّع الكيبورد) */
+    let sx = 0, sy = 0;
+    document.addEventListener('touchstart', e => { const t = e.target; if(isField(t)){ t.__wdTapAt = Date.now(); const p = e.touches[0]; sx = p.clientX; sy = p.clientY; } }, { capture: true, passive: true });
+    document.addEventListener('touchend', e => {
+      const t = e.target; if(!isField(t) || t.disabled || t.readOnly) return;
+      const p = e.changedTouches && e.changedTouches[0]; if(p && (Math.abs(p.clientX - sx) > 10 || Math.abs(p.clientY - sy) > 10)) return; /* سحب مو لمسة */
+      t.__wdTapAt = Date.now();
+      if(document.activeElement === t && !kbShown()){ try { t.blur(); } catch(_){} }
+      t.__wdTapped = true;
+      if(document.activeElement !== t){ try { t.focus({ preventScroll: true }); } catch(_){ try { t.focus(); } catch(__){} } }
+      setTimeout(upd, 60); setTimeout(upd, 400);
+    }, { capture: true, passive: true });
+  }
+
   document.addEventListener('click', e => { if(e.target.closest && e.target.closest('#aiSheet .done, #rkbSheet .x')){ const a = document.activeElement; if(a && a.blur) a.blur(); } }, true);
 
   function watch(){
@@ -78,7 +106,7 @@
       if(!dock.ok) dock.ok = dock();
       const open = document.body.classList.contains('aiopen');
       if(open) dock();
-      if(open && !watch.o){ const q = document.getElementById('aiQ'); if(q && document.activeElement !== q){ try { q.focus({ preventScroll: true }); } catch(e){} } setTimeout(upd, 60); setTimeout(scrollEnd, 120); }
+      if(open && !watch.o){ const q = document.getElementById('aiQ'); if(!touch && q && document.activeElement !== q){ try { q.focus({ preventScroll: true }); } catch(e){} } setTimeout(upd, 60); setTimeout(scrollEnd, 120); if(touch) setTimeout(dropGhost, 650); }
       watch.o = open;
     }).observe(document.body, { attributes: true, attributeFilter: ['class'], childList: true });
     dock.ok = dock();
