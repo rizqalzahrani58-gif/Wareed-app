@@ -36,3 +36,6 @@
 
 /* ١٧ أكتوبر: أبو راكان ألغى الأسئلة المقترحة في كل الوكلاء — شات مباشر */
 #aiQuick{display:none!important}
+
+/* ١٩ أكتوبر: زر «حذف» كان مخفي في تمرير أفقي لصف أزرار المهمة — الأزرار تنزل سطر بدل ما تنقص */
+#tasks .task .tacts{flex-wrap:wrap!important;overflow:visible!important;row-gap:.4em}
