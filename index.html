@@ -2,6 +2,7 @@
 <meta name="theme-color" content="#0b0d12"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="وريد">
 <link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="https://zymsuvxoylpxowkhycuv.supabase.co/storage/v1/object/public/site/apple-touch-icon.png?v=2"><link rel="icon" type="image/png" href="https://zymsuvxoylpxowkhycuv.supabase.co/storage/v1/object/public/site/icon-192.png?v=2">
 <style>:root{color-scheme:dark;box-sizing:border-box}html{background:#0b0d12;scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#0b0d12;color:#f3f5f9}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}
+#appRoot{visibility:hidden}html.wdReady #appRoot{visibility:visible}#wdBoot{position:fixed;inset:0;z-index:900;background:#0b0d12;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1em;padding:1.5em;font-family:"IBM Plex Sans Arabic","Readex Pro",system-ui,sans-serif;color:#c9d0de;text-align:center}html.wdReady #wdBoot{display:none}#wdBoot img{width:4.6em;height:4.6em;border-radius:24%;box-shadow:0 10px 30px rgba(90,162,255,.25)}#wdBoot .dots{width:2.4em;height:.4em;border-radius:1em;background:linear-gradient(90deg,#5aa2ff,#1e2330);background-size:200% 100%;animation:wdb 1.1s linear infinite}@keyframes wdb{to{background-position:-200% 0}}#wdBoot.err .dots{display:none}#wdBoot p{margin:0;line-height:1.7}#wdBoot button{font:inherit;font-weight:600;background:#5aa2ff;color:#fff;border:0;border-radius:12px;padding:.7em 1.3em;cursor:pointer}
 #wdLogin{position:fixed;inset:0;z-index:1000;background:radial-gradient(120% 80% at 50% 0%,#17203a 0%,#0b0d12 60%);display:flex;align-items:center;justify-content:center;padding:1.2em;font-family:"IBM Plex Sans Arabic","Readex Pro",system-ui,sans-serif;color:#f3f5f9}
 #wdLogin .wdbox{width:100%;max-width:22em;background:#161a23;border:1px solid #272d3a;border-radius:22px;padding:1.8em 1.4em;display:flex;flex-direction:column;gap:.85em;box-shadow:0 20px 60px rgba(0,0,0,.5)}
 #wdLogin .wdlogo{width:5.2em;height:5.2em;border-radius:24%;overflow:hidden;align-self:center;box-shadow:0 10px 30px rgba(90,162,255,.25)}#wdLogin .wdlogo img{width:100%;height:100%;display:block}
@@ -16,14 +17,25 @@
 <script crossorigin="anonymous" src="https://zymsuvxoylpxowkhycuv.supabase.co/storage/v1/object/public/site/supabase.js?v=2"></script>
 <script>window.WAREED_CFG={url:"https://zymsuvxoylpxowkhycuv.supabase.co",key:"sb_publishable_KaEQNYshxSOWOs91VX54mg_-k6vdiDU"};</script>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@400;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap"><link rel="stylesheet" href="https://zymsuvxoylpxowkhycuv.supabase.co/storage/v1/object/public/site/app.css?v=1"><link rel="stylesheet" href="https://zymsuvxoylpxowkhycuv.supabase.co/storage/v1/object/public/site/native.css?v=6"><link rel="stylesheet" href="https://rizqalzahrani58-gif.github.io/Wareed-app/room.css?v=12"><link rel="stylesheet" href="https://rizqalzahrani58-gif.github.io/Wareed-app/mgr.css?v=1"><script defer crossorigin="anonymous" src="https://zymsuvxoylpxowkhycuv.supabase.co/storage/v1/object/public/site/v2/room.js?v=6"></script><link rel="stylesheet" href="https://rizqalzahrani58-gif.github.io/Wareed-app/nasser.css?v=3"><script>window.__wdPatch={app:[],native:[]};/* التعديلات مدموجة في site/v2 (١٧ أكتوبر) — السكربتات تحت تعطي دوال التشغيل بس */</script><script src="https://rizqalzahrani58-gif.github.io/Wareed-app/wd-patch5.js?v=1"></script><script src="https://rizqalzahrani58-gif.github.io/Wareed-app/rawan-privacy.js?v=1"></script><script src="https://rizqalzahrani58-gif.github.io/Wareed-app/rawan-kb.js?v=1"></script><script src="https://rizqalzahrani58-gif.github.io/Wareed-app/rawan-class.js?v=1"></script><script src="https://rizqalzahrani58-gif.github.io/Wareed-app/nasser-off.js?v=1"></script><link rel="stylesheet" href="https://rizqalzahrani58-gif.github.io/Wareed-app/fm.css?v=1"><link rel="stylesheet" href="https://rizqalzahrani58-gif.github.io/Wareed-app/notify.css?v=1"><script defer src="https://rizqalzahrani58-gif.github.io/Wareed-app/notify.js?v=1"></script><script defer src="https://rizqalzahrani58-gif.github.io/Wareed-app/kb.js?v=5"></script><script defer src="https://rizqalzahrani58-gif.github.io/Wareed-app/biz.js?v=1"></script><script crossorigin="anonymous" src="https://zymsuvxoylpxowkhycuv.supabase.co/storage/v1/object/public/site/shim.js?v=9"></script>
-<script>if("serviceWorker" in navigator){window.addEventListener("load",()=>{navigator.serviceWorker.register("sw.js?v=3").catch(()=>{});});}
+<script>if("serviceWorker" in navigator){window.addEventListener("load",()=>{navigator.serviceWorker.register("sw.js?v=4").catch(()=>{});});}
 </script>
 </head><body>
+<div id="wdBoot" dir="rtl"><img src="https://zymsuvxoylpxowkhycuv.supabase.co/storage/v1/object/public/site/icon-192.png?v=2" alt=""><div class="dots"></div><p id="wdBootMsg">جاري تحميل اللوحة…</p></div>
 <div id="appRoot" dir="rtl"></div>
 <script>
-(async()=>{try{const r=await fetch("https://zymsuvxoylpxowkhycuv.supabase.co/storage/v1/object/public/site/app.html?v=1",{cache:"no-cache"});document.getElementById("appRoot").innerHTML=await r.text();
-const load=u=>new Promise(r=>{const s=document.createElement("script");s.crossOrigin="anonymous";s.src=u;s.onload=r;s.onerror=r;document.body.append(s);});
-await load("https://zymsuvxoylpxowkhycuv.supabase.co/storage/v1/object/public/site/v2/app.js?v=6");await load("https://zymsuvxoylpxowkhycuv.supabase.co/storage/v1/object/public/site/v2/native.js?v=3");await load("https://zymsuvxoylpxowkhycuv.supabase.co/storage/v1/object/public/site/v2/fm.js?v=3");}
-catch(e){document.getElementById("appRoot").innerHTML='<p style="padding:2em;text-align:center;color:#f3f5f9">ما قدرت أحمّل اللوحة. تأكد من الإنترنت وحدّث الصفحة.</p>';}})();
+/* محمّل اللوحة (٢٠ أكتوبر): يخفي الواجهة لين app.js يشتغل فعلاً، يعيد المحاولة لو الشبكة ضعيفة، ولو فشل يعرض زر إعادة بدل صفحة ناقصة */
+(async()=>{const SITE="https://zymsuvxoylpxowkhycuv.supabase.co/storage/v1/object/public/site/";
+const boot=document.getElementById("wdBoot"),msg=document.getElementById("wdBootMsg");
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const get=async(u,n)=>{for(let i=0;i<n;i++){try{const r=await fetch(u,{cache:"no-cache"});if(r.ok)return await r.text();}catch(e){}await sleep(700*(i+1));}throw new Error("fetch "+u);};
+const load=(u,n)=>new Promise((res,rej)=>{let i=0;const go=()=>{const s=document.createElement("script");s.crossOrigin="anonymous";s.src=u+(i?"&r="+i:"");s.onload=()=>res(true);s.onerror=()=>{s.remove();if(++i<n)setTimeout(go,700*i);else rej(new Error("script "+u));};document.body.append(s);};go();});
+const fail=t=>{boot.classList.add("err");msg.textContent=t;const b=document.createElement("button");b.type="button";b.textContent="أعد المحاولة";b.onclick=()=>location.reload();msg.after(b);};
+const slow=setTimeout(()=>{msg.textContent="الشبكة بطيئة… لحظات";},7000);
+try{document.getElementById("appRoot").innerHTML=await get(SITE+"app.html?v=1",3);
+  await load(SITE+"v2/app.js?v=7",3);clearTimeout(slow);
+  if(!window.__hub&&location.hash!=="#voice")throw new Error("app.js ما بدأ");
+  document.documentElement.classList.add("wdReady");
+  for(const u of ["v2/native.js?v=3","v2/fm.js?v=3"]){try{await load(SITE+u,2);}catch(e){}}}
+catch(e){clearTimeout(slow);fail("ما قدرت أحمّل اللوحة. تأكد من الإنترنت ثم أعد المحاولة.");}})();
 </script>
 </body></html>
