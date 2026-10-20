@@ -1,0 +1,35 @@
+/* شكل اللابتوب والشاشات العريضة (اعتماد أبو راكان ٢٠ أكتوبر ٢٠٢٦) — الجوال ما يتأثر */
+@media (min-width:1024px){
+  #appRoot{max-width:min(1440px,100%)!important;padding-inline:24px;box-sizing:border-box}
+  .wrap{padding-inline:16px!important}
+
+  /* البانر: منصة الوكلاء مستطيل عريض */
+  #wdStage{margin:.4em 0 .6em!important;background:#12161f;border:1px solid #222838;border-radius:24px;overflow:hidden}
+  #wdStage .st{height:360px!important}
+
+  /* البوابات: بطاقات مستطيلة ٤ أعمدة */
+  #hub{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:14px!important;justify-items:stretch!important;padding:.4em 0 .6em!important}
+  #hub>.hubc{flex-direction:row!important;align-items:center!important;justify-content:flex-start!important;gap:14px!important;
+    width:100%!important;min-height:88px;box-sizing:border-box;padding:14px 16px!important;
+    background:#151a24!important;border:1px solid #222838!important;border-radius:16px!important;text-align:start;transition:border-color .15s,transform .12s}
+  #hub>.hubc:hover{border-color:#3a4256!important}
+  #hub>.hubc:active{transform:scale(.98)}
+  #hub>.hubc .ic{flex:0 0 auto;width:56px;height:56px}
+  #hub>.hubc .lb{flex:1;min-width:0;max-width:none!important;font-size:1.05em;font-weight:600;text-align:start;display:flex;flex-direction:column;gap:3px}
+  #hub>.hubc .bd{position:static!important;flex:0 0 auto;font-size:.85em!important;min-width:2.2em!important;height:2em!important}
+  #hub>.hubc .bd[hidden]{display:none!important}
+
+  /* البوابات اللي لها وكيل: صورة دائرية بإطار ملوّن + اسم الوكيل، وتجي أول */
+  #hub>.hubc:is([data-id=tasks],[data-id=shySec],[data-id=rvSec],[data-id=mstSec],[data-id=psSec]) .ic{border-radius:50%!important;background:#1a1f2b!important;border:2px solid var(--ag);position:relative}
+  #hub>.hubc:is([data-id=tasks],[data-id=shySec],[data-id=rvSec],[data-id=mstSec],[data-id=psSec]) .ic::after{content:"";position:absolute;bottom:1px;left:1px;width:11px;height:11px;border-radius:50%;background:#5fd49a;border:2px solid #151a24}
+  #hub>.hubc:is([data-id=tasks],[data-id=shySec],[data-id=rvSec],[data-id=mstSec],[data-id=psSec]) .lb::after{content:"الوكيل: " var(--agn);font-size:.72em;font-weight:600;color:var(--ag)}
+  body:not(.hubedit) #hub>.hubc:is([data-id=tasks],[data-id=shySec],[data-id=rvSec],[data-id=mstSec],[data-id=psSec]){order:-1}
+  #hub>.hubc[data-id=tasks]{--ag:#6cb6ff;--agn:"لمّاح"}
+  #hub>.hubc[data-id=shySec]{--ag:#ff7b8a;--agn:"شريان"}
+  #hub>.hubc[data-id=rvSec]{--ag:#ffd166;--agn:"Raqeeb AI"}
+  #hub>.hubc[data-id=mstSec]{--ag:#c39bff;--agn:"المستشار"}
+  #hub>.hubc[data-id=psSec]{--ag:#5fd4d0;--agn:"أخصائي المنتجات"}
+
+  /* داخل البوابات: المحتوى بعرض مريح للقراءة */
+  body.secmode .wrap{max-width:60em;margin-inline:auto}
+}
