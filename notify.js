@@ -1,4 +1,5 @@
-/* إشعارات المدراء — يرسلها أبو راكان وروان ود. ناصر، وتظهر في «ملفي» + تنبيه على الجوال */
+/* إشعارات المدراء — يرسلها أبو راكان وروان ود. ناصر، وتظهر في «ملفي» + تنبيه على الجوال
+   ٢٥ أكتوبر: التنبيهات إجبارية لكل الزملاء (شاشة تقفل التطبيق لين تتفعل) + إشعار جوال لكل مهمة تنضاف للمسؤول (task-push) */
 (function(){
   const FN = 'https://zymsuvxoylpxowkhycuv.supabase.co/functions/v1/notify';
   let sb, me, notices = [], reads = new Set(), people = [], readsAll = [], replies = [];
@@ -20,7 +21,7 @@
   async function pushState(){ if(!pushOK()) return 'na'; if(Notification.permission === 'denied') return 'denied'; const reg = await navigator.serviceWorker.getRegistration(); const s = reg && await reg.pushManager.getSubscription(); return s ? 'on' : 'off'; }
   async function enablePush(){
     const perm = await Notification.requestPermission(); if(perm !== 'granted') return false;
-    const reg = await navigator.serviceWorker.register('sw.js?v=3'); await navigator.serviceWorker.ready;
+    const reg = await navigator.serviceWorker.register('sw.js?v=4'); await navigator.serviceWorker.ready;
     const { publicKey } = await call({ action: 'key' });
     let s = await reg.pushManager.getSubscription();
     if(!s) s = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64(publicKey) });
@@ -28,6 +29,40 @@
     return true;
   }
   async function syncSub(){ try { if(await pushState() !== 'on') return; const reg = await navigator.serviceWorker.getRegistration(); const s = await reg.pushManager.getSubscription(); const j = s.toJSON(); await sb.from('push_subs').upsert({ endpoint: j.endpoint, user_id: me.id, sub: j, ua: navigator.userAgent.slice(0, 200) }); } catch(e){} }
+
+
+  /* ---------- التنبيهات إجبارية (٢٥ أكتوبر) + إشعار المهام ---------- */
+  const TP = 'https://zymsuvxoylpxowkhycuv.supabase.co/functions/v1/task-push';
+  let sweepT = null;
+  function sweep(){ clearTimeout(sweepT); sweepT = setTimeout(async () => { try { await fetch(TP, { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + await token() }, body: JSON.stringify({ action: 'sweep' }) }); } catch(e){} }, 1500); }
+  let gate = null;
+  async function enforce(){
+    const st = await pushState().catch(() => 'na');
+    if(st === 'on'){ if(gate){ gate.remove(); gate = null; document.documentElement.classList.remove('wdGate'); } return; }
+    if(!gate){ gate = $e('div', { id: 'wdPushGate', dir: 'rtl', role: 'dialog', 'aria-modal': 'true' }); document.body.append(gate); document.documentElement.classList.add('wdGate'); }
+    const icon = $e('div', { class: 'pgIco' }, '🔔');
+    const h = $e('h2', {}, 'فعّل التنبيهات عشان تكمل');
+    const p = $e('p', {}, 'تنبيهات وريد إجبارية لكل الزملاء: أي مهمة تنضاف لك يوصلك إشعارها على جوالك فوراً حتى لو التطبيق مقفل.');
+    const msg = $e('p', { class: 'pgMsg' });
+    let act = null;
+    if(st === 'off'){
+      act = $e('button', { type: 'button', class: 'pgBtn' }, 'فعّل التنبيهات');
+      act.onclick = async () => { act.disabled = true; act.textContent = 'جاري التفعيل…'; msg.textContent = '';
+        try { const ok = await enablePush(); if(!ok){ msg.textContent = 'لازم تضغط «سماح» عشان تقدر تدخل التطبيق.'; } } catch(e){ msg.textContent = 'ما قدرت أفعّلها: ' + (e.message || e); }
+        await enforce(); paintPush(); if(act){ act.disabled = false; act.textContent = 'فعّل التنبيهات'; } };
+    } else if(st === 'denied'){
+      p.textContent = 'التنبيهات مقفلة لهالتطبيق. افتحها من الإعدادات وارجع اضغط «تحقق»:';
+      msg.replaceChildren($e('span', {}, isIOS ? 'الآيفون: الإعدادات ← الإشعارات ← وريد ← السماح بالإشعارات.' : 'المتصفح: اضغط القفل 🔒 جنب الرابط ← الإشعارات ← سماح.'));
+      act = $e('button', { type: 'button', class: 'pgBtn' }, 'تحقق'); act.onclick = () => location.reload();
+    } else if(isIOS && !standalone){
+      p.textContent = 'على الآيفون التنبيهات تشتغل بس لو فتحت وريد من أيقونة الشاشة الرئيسية:';
+      msg.replaceChildren($e('span', {}, '١) من سفاري اضغط زر المشاركة ⬆️  ٢) «إضافة إلى الشاشة الرئيسية»  ٣) افتح وريد من الأيقونة الجديدة وفعّل التنبيهات.'));
+    } else {
+      p.textContent = isIOS ? 'حدّث نظام الآيفون (iOS 16.4 أو أحدث) عشان تشتغل التنبيهات.' : 'هالمتصفح ما يدعم التنبيهات. افتح وريد من Chrome أو Safari محدّث.';
+    }
+    gate.replaceChildren($e('div', { class: 'pgBox' }, icon, h, p, msg, act));
+  }
+  function openTask(id){ const go = (n) => { if(window.__hub){ try { window.__hub.openSec('tasks'); } catch(e){} setTimeout(() => { const el = document.querySelector('[data-id="' + CSS.escape(id) + '"]') || document.getElementById('tasks'); if(el) el.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 500); history.replaceState(null, '', location.pathname); } else if(n < 40) setTimeout(() => go(n + 1), 500); }; go(0); }
 
   /* ---------- بيانات ---------- */
   async function load(){
@@ -188,10 +223,14 @@
     const { data: s } = await sb.auth.getSession(); if(!s.session) return setTimeout(start, 1500);
     const { data: p } = await sb.from('profiles').select('*').eq('id', s.session.user.id).maybeSingle(); if(!p) return setTimeout(start, 1500);
     me = p;
+    try { const st = document.createElement('style'); st.textContent = "/* التنبيهات إجبارية (٢٥ أكتوبر) */\nhtml.wdGate,html.wdGate body{overflow:hidden!important}\n#wdPushGate{position:fixed;inset:0;z-index:2147483000;background:radial-gradient(120% 80% at 50% 0%,#17203a 0%,#0b0d12 62%);display:flex;align-items:center;justify-content:center;padding:max(1.2em,env(safe-area-inset-top)) 1.2em max(1.2em,env(safe-area-inset-bottom));font-family:\"IBM Plex Sans Arabic\",\"Readex Pro\",system-ui,sans-serif;color:#f3f5f9}\n#wdPushGate .pgBox{width:100%;max-width:23em;background:#161a23;border:1px solid #272d3a;border-radius:22px;padding:1.8em 1.4em;display:flex;flex-direction:column;gap:.8em;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.5)}\n#wdPushGate .pgIco{font-size:2.6em;line-height:1}\n#wdPushGate h2{margin:0;font-size:1.3em;font-weight:700}\n#wdPushGate p{margin:0;line-height:1.7;color:#c9d0de}\n#wdPushGate .pgMsg{font-size:.92em;color:#ffb38a}#wdPushGate .pgMsg:empty{display:none}\n#wdPushGate .pgBtn{font:inherit;font-size:1.05em;font-weight:600;background:#5aa2ff;color:#fff;border:0;border-radius:12px;padding:.85em 1.2em;cursor:pointer}#wdPushGate .pgBtn:disabled{opacity:.55}\n"; document.head.append(st); } catch(e){}
+    enforce(); document.addEventListener('visibilitychange', () => { if(!document.hidden) enforce(); });
     const { data: ppl } = await sb.from('profiles').select('id,name,role,pos,email'); people = ppl || [];
     const wait = () => { const sec = document.getElementById('profSec'); if(sec && document.querySelector('.avbtn')){ build(sec); } else setTimeout(wait, 500); };
     wait();
-    await load(); syncSub();
+    await load(); syncSub(); sweep();
+    sb.channel('tasks-push').on('postgres_changes', { event: '*', schema: 'public', table: 'docs', filter: 'collection=eq.tasks' }, () => sweep()).subscribe();
+    const tq = new URLSearchParams(location.search).get('t'); if(tq) openTask(tq);
     sb.channel('notices-rt').on('postgres_changes', { event: '*', schema: 'public', table: 'notices' }, async pl => {
       await load();
       const n = pl.new; if(pl.eventType === 'INSERT' && n && forMe(n)) toast(n);
@@ -201,7 +240,7 @@
     }).subscribe();
     const q = new URLSearchParams(location.search).get('n');
     if(q){ const go = () => { if(window.__hub && document.getElementById('nt-' + q)){ window.__hub.openSec('profSec'); document.getElementById('nt-' + q).scrollIntoView({ block: 'center' }); markRead(q); history.replaceState(null, '', location.pathname); } else setTimeout(go, 600); }; go(); }
-    setInterval(load, 120000);
+    setInterval(() => { load(); sweep(); }, 120000);
   }
   function toast(n, raw){
     const t = $e('div', { class: 'nttoast', onclick: () => { t.remove(); window.__hub && window.__hub.openSec('profSec'); const el = n.id && document.getElementById('nt-' + n.id); if(el) el.scrollIntoView({ block: 'center' }); if(!raw) markRead(n.id); } }, $e('b', {}, (raw ? '' : '🔔 ') + n.title), $e('span', {}, (n.sender_name ? n.sender_name + ': ' : '') + (n.body || '').slice(0, 120)));
