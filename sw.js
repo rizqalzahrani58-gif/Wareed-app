@@ -12,9 +12,11 @@ self.addEventListener('fetch',e=>{const u=e.request.url;if(e.request.method!=='G
     try{const r=await Promise.race([net,timer]);if(r)return r;}catch(_){}
     const hit=await c.match(e.request,{ignoreVary:true});if(hit)return hit;
     try{return await net;}catch(err){return new Response('',{status:504,statusText:'offline'});}})());});
-/* إشعارات وريد */
+/* إشعارات وريد — sticky (مهمة جديدة، قرار ٢٦ أكتوبر): يبقى الإشعار ظاهر لين يُضغط */
 self.addEventListener('push',e=>{let d={};try{d=e.data?e.data.json():{};}catch(_){d={title:'وريد',body:e.data&&e.data.text()};}
-  e.waitUntil(self.registration.showNotification(d.title||'وريد',{body:d.body||'',tag:d.id||'wareed',dir:'rtl',lang:'ar',data:{url:d.url||'./'},
-    icon:'https://zymsuvxoylpxowkhycuv.supabase.co/storage/v1/object/public/site/icon-192.png?v=2',badge:'https://zymsuvxoylpxowkhycuv.supabase.co/storage/v1/object/public/site/icon-192.png?v=2'}));});
+  const o={body:d.body||'',tag:d.id||'wareed',dir:'rtl',lang:'ar',data:{url:d.url||'./'},
+    icon:'https://zymsuvxoylpxowkhycuv.supabase.co/storage/v1/object/public/site/icon-192.png?v=2',badge:'https://zymsuvxoylpxowkhycuv.supabase.co/storage/v1/object/public/site/icon-192.png?v=2'};
+  if(d.sticky){o.requireInteraction=true;o.renotify=true;o.vibrate=[300,150,300,150,300];}
+  e.waitUntil(self.registration.showNotification(d.title||'وريد',o));});
 self.addEventListener('notificationclick',e=>{e.notification.close();const url=new URL((e.notification.data&&e.notification.data.url)||'./',SCOPE).href;
   e.waitUntil(self.clients.matchAll({type:'window',includeUncontrolled:true}).then(cs=>{for(const c of cs){if(c.url.startsWith(SCOPE)){c.navigate(url).catch(()=>{});return c.focus();}}return self.clients.openWindow(url);}));});
