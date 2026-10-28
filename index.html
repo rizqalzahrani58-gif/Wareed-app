@@ -32,7 +32,7 @@ const load=(u,n)=>new Promise((res,rej)=>{let i=0;const go=()=>{const s=document
 const fail=t=>{boot.classList.add("err");msg.textContent=t;const b=document.createElement("button");b.type="button";b.textContent="أعد المحاولة";b.onclick=()=>location.reload();msg.after(b);};
 const slow=setTimeout(()=>{msg.textContent="الشبكة بطيئة… لحظات";},7000);
 try{document.getElementById("appRoot").innerHTML=await get(SITE+"app.html?v=1",3);
-  await load(SITE+"v2/app.js?v=7",3);clearTimeout(slow);
+  await load(SITE+"v2/app.js?v=8",3);clearTimeout(slow);
   if(!window.__hub&&location.hash!=="#voice")throw new Error("app.js ما بدأ");
   document.documentElement.classList.add("wdReady");
   for(const u of ["v2/native.js?v=3","v2/fm.js?v=3"]){try{await load(SITE+u,2);}catch(e){}}}
