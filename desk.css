@@ -27,7 +27,8 @@
   #hub>.hubc[data-id=tasks]{--ag:#6cb6ff;--agn:"لمّاح"}
   #hub>.hubc[data-id=shySec]{--ag:#ff7b8a;--agn:"شريان"}
   #hub>.hubc[data-id=rvSec]{--ag:#ffd166;--agn:"Raqeeb AI"}
-  #hub>.hubc[data-id=mstSec]{--ag:#c39bff;--agn:"المستشار"}
+  /* قراءة البزنس (مستشار وريد سابقاً): المستشار اندمج في Rizq AI بقرار أبو راكان ٣٠ أكتوبر */
+  #hub>.hubc[data-id=mstSec]{--ag:#c39bff;--agn:"Rizq AI"}
   #hub>.hubc[data-id=psSec]{--ag:#5fd4d0;--agn:"أخصائي المنتجات"}
 
   /* داخل البوابات: المحتوى بعرض مريح للقراءة */
