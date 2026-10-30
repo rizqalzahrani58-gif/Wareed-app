@@ -1,6 +1,7 @@
-/* وريد — Service Worker v4 (٢٠ أكتوبر): يخزّن ملفات التطبيق من GitHub Pages ومن Supabase Storage (site/) معاً.
-   الشبكة أولاً (مع مهلة ١٠ ثواني)، وإذا تعطّلت أو تأخرت يرجع للنسخة المخزّنة — عشان اللوحة تفتح حتى لو الشبكة ضعيفة. */
-const V='wareed-v4';const SCOPE=self.registration.scope;
+/* وريد — Service Worker v5 (٣٠ أكتوبر): يخزّن ملفات التطبيق من GitHub Pages ومن Supabase Storage (site/) معاً.
+   الشبكة أولاً (مع مهلة ١٠ ثواني)، وإذا تعطّلت أو تأخرت يرجع للنسخة المخزّنة — عشان اللوحة تفتح حتى لو الشبكة ضعيفة.
+   v5: إشعارات لمّاح فيها أزرار (خلصت / أبي تمديد) على الأندرويد والكمبيوتر — الضغط يفتح المهمة في لمّاح والزر محدد. الآيفون يفتح المهمة بس. */
+const V='wareed-v5';const SCOPE=self.registration.scope;
 const SITE='https://zymsuvxoylpxowkhycuv.supabase.co/storage/v1/object/public/site/';
 const ours=u=>u.startsWith(SCOPE)||u.startsWith(SITE);
 self.addEventListener('install',e=>{self.skipWaiting();});
@@ -17,6 +18,8 @@ self.addEventListener('push',e=>{let d={};try{d=e.data?e.data.json():{};}catch(_
   const o={body:d.body||'',tag:d.id||'wareed',dir:'rtl',lang:'ar',data:{url:d.url||'./'},
     icon:'https://zymsuvxoylpxowkhycuv.supabase.co/storage/v1/object/public/site/icon-192.png?v=2',badge:'https://zymsuvxoylpxowkhycuv.supabase.co/storage/v1/object/public/site/icon-192.png?v=2'};
   if(d.sticky){o.requireInteraction=true;o.renotify=true;o.vibrate=[300,150,300,150,300];}
+  if(Array.isArray(d.actions)&&d.actions.length)o.actions=d.actions.slice(0,2).map(a=>({action:String(a.action||''),title:String(a.title||'')}));
   e.waitUntil(self.registration.showNotification(d.title||'وريد',o));});
-self.addEventListener('notificationclick',e=>{e.notification.close();const url=new URL((e.notification.data&&e.notification.data.url)||'./',SCOPE).href;
+self.addEventListener('notificationclick',e=>{e.notification.close();const u=new URL((e.notification.data&&e.notification.data.url)||'./',SCOPE);
+  if(e.action&&/^(done|ext|stuck)$/.test(e.action))u.searchParams.set('a',e.action);const url=u.href;
   e.waitUntil(self.clients.matchAll({type:'window',includeUncontrolled:true}).then(cs=>{for(const c of cs){if(c.url.startsWith(SCOPE)){c.navigate(url).catch(()=>{});return c.focus();}}return self.clients.openWindow(url);}));});
