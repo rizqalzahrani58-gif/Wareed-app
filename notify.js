@@ -1,5 +1,6 @@
 /* إشعارات المدراء — يرسلها أبو راكان وروان ود. ناصر، وتظهر في «ملفي» + تنبيه على الجوال
-   ٢٥ أكتوبر: التنبيهات إجبارية لكل الزملاء (شاشة تقفل التطبيق لين تتفعل) + إشعار جوال لكل مهمة تنضاف للمسؤول (task-push) */
+   ٢٥ أكتوبر: التنبيهات إجبارية لكل الزملاء (شاشة تقفل التطبيق لين تتفعل) + إشعار جوال لكل مهمة تنضاف للمسؤول (task-push)
+   ١ نوفمبر: «وصلني» و«المرسلة» انشالت من الملف — كل إشعار يتحوّل مهمة تلقائياً للمستلم (trigger notices_to_task في قاعدة البيانات) */
 (function(){
   const FN = 'https://zymsuvxoylpxowkhycuv.supabase.co/functions/v1/notify';
   let sb, me, notices = [], reads = new Set(), people = [], readsAll = [], replies = [];
@@ -117,7 +118,7 @@
 
   /* ---------- الواجهة ---------- */
   let box, inbox, sentBox, pushRow, badge;
-  function unread(){ return notices.filter(n => forMe(n) && !reads.has(n.id)).length + newReplies().length; }
+  function unread(){ return 0; /* ١ نوفمبر: الإشعارات صارت مهام — العدّاد على أيقونة المهام */ }
   function paintBadge(){
     const av = document.querySelector('.avbtn'); if(!av) return;
     if(!badge || !badge.isConnected){ badge = $e('span', { class: 'ntbadge' }); av.append(badge); }
@@ -201,7 +202,7 @@
       const { data, error } = await sb.from('notices').insert({ title, body: body.value.trim(), target_all: all, targets: all ? [] : [...sel], sender_id: me.id, sender_name: me.name }).select().single();
       if(error){ msg.textContent = 'ما انرسل: ' + error.message; send.disabled = false; return; }
       let r = {}; try { r = await call({ notice_id: data.id }); } catch(e){}
-      msg.className = 'pmsg ok'; msg.textContent = 'انرسل ✓ ' + (r.recipients != null ? '(' + r.recipients + ' مستلم، ' + (r.reached || 0) + ' منهم وصلهم تنبيه على الجوال)' : '');
+      msg.className = 'pmsg ok'; msg.textContent = 'انرسل ✓' + (all ? '' : ' وصار مهمة للمستلم') + ' ' + (r.recipients != null ? '(' + r.recipients + ' مستلم، ' + (r.reached || 0) + ' منهم وصلهم تنبيه على الجوال)' : '');
       t.value = ''; body.value = ''; send.disabled = false; load();
     };
     return $e('div', { class: 'ntcomp' }, $e('h3', {}, 'أرسل إشعار'), $e('div', { class: 'ntchips' }, allChip, chips), t, body, msg, send);
@@ -211,8 +212,9 @@
     pushRow = $e('div', { class: 'ntpushrow' });
     inbox = $e('div', { class: 'ntlist' });
     box.append($e('h2', {}, '🔔 الإشعارات'), pushRow);
-    if(canSend()){ sentBox = $e('div', { class: 'ntlist' }); box.append(composer(), $e('h3', {}, 'وصلني'), inbox, $e('h3', {}, 'المرسلة'), sentBox); }
-    else box.append(inbox);
+    /* ١ نوفمبر: بدون «وصلني» و«المرسلة» — الإشعار يتحوّل مهمة وتلقاه في بوابة المهام */
+    if(canSend()) box.append(composer(), $e('p', { class: 'hint' }, 'أي إشعار ترسله أو يوصلك يتحوّل مهمة تلقائياً في بوابة المهام.'));
+    inbox = null;
     const prof = sec.querySelector('.prof'); sec.insertBefore(box, prof ? prof.nextSibling : null);
     paintPush(); paint();
     try { new IntersectionObserver(es => { if(es.some(x => x.isIntersecting)) setTimeout(markSeen, 2500); }).observe(box); } catch(e){}
@@ -239,11 +241,11 @@
       if(r && incoming(r)){ const n = notices.find(x => x.id === r.notice_id) || {}; toast({ id: n.id, title: ({ ack: '✅ ', task: '📋 ', reply: '↩️ ' })[r.kind] + (r.user_name || '') + ({ ack: ' استلم', task: ' حوّله مهمة', reply: ' رد' })[r.kind], sender_name: '', body: (n.title || '') + (r.body ? ': ' + r.body : '') }, true); }
     }).subscribe();
     const q = new URLSearchParams(location.search).get('n');
-    if(q){ const go = () => { if(window.__hub && document.getElementById('nt-' + q)){ window.__hub.openSec('profSec'); document.getElementById('nt-' + q).scrollIntoView({ block: 'center' }); markRead(q); history.replaceState(null, '', location.pathname); } else setTimeout(go, 600); }; go(); }
+    if(q){ markRead(q); openTask('nt' + q.replace(/-/g, '')); }
     setInterval(() => { load(); sweep(); }, 120000);
   }
   function toast(n, raw){
-    const t = $e('div', { class: 'nttoast', onclick: () => { t.remove(); window.__hub && window.__hub.openSec('profSec'); const el = n.id && document.getElementById('nt-' + n.id); if(el) el.scrollIntoView({ block: 'center' }); if(!raw) markRead(n.id); } }, $e('b', {}, (raw ? '' : '🔔 ') + n.title), $e('span', {}, (n.sender_name ? n.sender_name + ': ' : '') + (n.body || '').slice(0, 120)));
+    const t = $e('div', { class: 'nttoast', onclick: () => { t.remove(); if(n.id) openTask('nt' + String(n.id).replace(/-/g, '')); if(!raw) markRead(n.id); } }, $e('b', {}, (raw ? '' : '🔔 ') + n.title), $e('span', {}, (n.sender_name ? n.sender_name + ': ' : '') + (n.body || '').slice(0, 120)));
     document.body.append(t); setTimeout(() => t.remove(), 9000);
   }
   if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => setTimeout(start, 800)); else setTimeout(start, 800);
