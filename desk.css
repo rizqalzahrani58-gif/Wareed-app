@@ -19,11 +19,11 @@
   #hub>.hubc .bd{position:static!important;flex:0 0 auto;font-size:.85em!important;min-width:2.2em!important;height:2em!important}
   #hub>.hubc .bd[hidden]{display:none!important}
 
-  /* البوابات اللي لها وكيل: صورة دائرية بإطار ملوّن + اسم الوكيل، وتجي أول */
+  /* البوابات اللي لها وكيل: صورة دائرية بإطار ملوّن + اسم الوكيل */
+  /* قرار أبو راكان ١١ نوفمبر ٢٠٢٦: ترتيب البوابات ثابت كما رتّبه (انلغى تقديم بوابات الوكلاء تلقائياً — order:-1) */
   #hub>.hubc:is([data-id=tasks],[data-id=shySec],[data-id=rvSec],[data-id=mstSec],[data-id=psSec]) .ic{border-radius:50%!important;background:#1a1f2b!important;border:2px solid var(--ag);position:relative}
   #hub>.hubc:is([data-id=tasks],[data-id=shySec],[data-id=rvSec],[data-id=mstSec],[data-id=psSec]) .ic::after{content:"";position:absolute;bottom:1px;left:1px;width:11px;height:11px;border-radius:50%;background:#5fd49a;border:2px solid #151a24}
   #hub>.hubc:is([data-id=tasks],[data-id=shySec],[data-id=rvSec],[data-id=mstSec],[data-id=psSec]) .lb::after{content:"الوكيل: " var(--agn);font-size:.72em;font-weight:600;color:var(--ag)}
-  body:not(.hubedit) #hub>.hubc:is([data-id=tasks],[data-id=shySec],[data-id=rvSec],[data-id=mstSec],[data-id=psSec]){order:-1}
   #hub>.hubc[data-id=tasks]{--ag:#6cb6ff;--agn:"لمّاح"}
   #hub>.hubc[data-id=shySec]{--ag:#ff7b8a;--agn:"شريان"}
   #hub>.hubc[data-id=rvSec]{--ag:#ffd166;--agn:"Raqeeb AI"}
