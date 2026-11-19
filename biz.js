@@ -5,6 +5,8 @@
    بوابة التنبيهات في notify.js تبقى إجبارية لباقي الزملاء. لو جوالها يدعم ولسه ما فعّلت، تطلع لها البوابة عادي بزر «فعّل». */
 (function(){
   const EX = ['038edc42-e5e9-4464-b6a3-a2ae5d61821c'];
+  /* ١٩ نوفمبر (قرار أبو راكان): فهد العازمي غيّر جواله — يدخل بدون بوابة التنبيهات (يقدر يفعّلها من «ملفي») */
+  const FULL = ['54f84adc-921c-4e4d-a333-49799057575f'];
   const can = () => 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window;
   let uid = null, busy = false;
   async function who(){ try { if(!window.sb) return null; const { data } = await window.sb.auth.getSession(); return data.session && data.session.user.id; } catch(e){ return null; } }
@@ -12,7 +14,7 @@
     if(busy || !document.getElementById('wdPushGate')) return; busy = true;
     try {
       if(!uid) uid = await who();
-      if(uid && EX.includes(uid) && !(can() && Notification.permission === 'default')){
+      if(uid && (FULL.includes(uid) || (EX.includes(uid) && !(can() && Notification.permission === 'default')))){
         const g = document.getElementById('wdPushGate'); if(g) g.remove();
         document.documentElement.classList.remove('wdGate');
       }
